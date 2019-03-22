@@ -1,3 +1,4 @@
 public enum Path
 {
-  POS1(WESTCAMPUS,
+    // POS1(WESTCAMPUST)
+}
