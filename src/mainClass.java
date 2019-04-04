@@ -1,8 +1,4 @@
 /**
- * 
- */
-
-/**
  * @author atifm
  *
  */
@@ -11,7 +7,7 @@ public class mainClass
 
     /**
      * copied from single server queue
-     * 
+     *
      * @param args
      */
     public static void main(String argv[])
