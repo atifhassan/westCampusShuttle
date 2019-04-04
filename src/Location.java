@@ -1,13 +1,20 @@
-
-//Comparable will not work for multiple busses running at a time
-//either have to create multiple sets of Location for each bus or find another method of sorting passengers on the bus
+/**
+ * 
+ * @author Atif Hassan
+ *
+ */
 public class Location implements Comparable<Location>
 {
     private final String name;
-    private int priotity;
+    private int priority;
     
     public Location(String name) {
         this.name = name;
+    }
+    
+    public Location(String name, int priority) {
+        this.name = name;
+        this.priority = priority;
     }
 
     public String getName() {
@@ -15,22 +22,22 @@ public class Location implements Comparable<Location>
     }
     public int getPriotity()
     {
-        return priotity;
+        return priority;
     }
 
     public void setPriotity(int priotity)
     {
-        this.priotity = priotity;
+        this.priority = priotity;
     }
 
     @Override
     public int compareTo(Location L)
     {
-        if((L).getPriotity()>priotity)
+        if((L).getPriotity()>priority)
 {
     return 1;
 }
-        if((L).getPriotity()<priotity)
+        if((L).getPriotity()<priority)
         {
             return -1;
         } 
@@ -41,15 +48,4 @@ public class Location implements Comparable<Location>
     public boolean equals(Object o) {
         return ((Location)o).getName().equals(name);
     }
-    
- /**   
-  WESTCAMPUS;
-  RAPIDANRIVER;
-  FIELDHOUSE;
-  THERAC;
-  RAPPAHANOCKRIVERLN;
-  MASONVALE;
-  PRESIDENTSPARK;
-  MASONPOND;
-  **/
 }

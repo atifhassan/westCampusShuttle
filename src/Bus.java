@@ -1,42 +1,125 @@
 import java.util.PriorityQueue;
-
+/**
+ * 
+ * @author Atif Hassan
+ *
+ */
 public class Bus
 {
-    private Location currentLoc;
-    private final int capacity = 30;
+    // private Location currentLoc;
+    private final int capacity = 24;
     private int size;
-    private Location dest;
-    private double arrivalTime;
+    private final char id;
+    // private int index = 0;
+    // private final int starting;
+    // private Location dest;
+    // private double arrivalTime;
     private PriorityQueue<Person> seats = new PriorityQueue<>(capacity);
+
+    /**
+     * private Location[] route = new Location[] { new Location("West Campus"), new
+     * Location("Rapidan River O"), new Location("Field House O"), new Location("RAC
+     * O"), new Location("Mason Pond O"), new Location("Presidents Park"), new
+     * Location("Masonvale"), new Location("Rappohannock"), new Location("RAC I"),
+     * new Location("Field House I"), new Location("Rapidan River I"), };
+     **/
+
+    /**
+     * initialize starting location and priorities
+     */
     public Bus()
     {
+        id = 0;
+        // starting = 0;
+
+        // currentLoc = route[index];
+        /**
+         * for (int i = 0; i < route.length; i++)// sets the priority for each stop {
+         * route[i].setPriotity(route.length - i);// the earlier on the route you are
+         * the higher the priority }
+         **/
     }
 
-    public void arrive()
+    /**
+     * 
+     * @param id identification for bus
+     */
+    public Bus(char id)
     {
-        while(seats.peek().getEndLoc().equals(currentLoc))
+        this.id = id;
+        // starting = 0;
+        // currentLoc = route[index];
+        /**
+         * for (int i = 0; i < route.length; i++)// sets the priority for each stop {
+         * route[i].setPriotity(route.length - i);// the earlier on the route you are
+         * the higher the priority }
+         **/
+    }
+
+    /**
+     * 
+     * @param id       identification number for bus
+     * @param starting give the bus a new staring stop
+     */
+    /**
+     * public Bus(char id, int starting) { this.starting = starting; index =
+     * starting; currentLoc = route[index]; this.id = id; for (int i = 0; i <
+     * route.length; i++) { route[(i + starting) %
+     * route.length].setPriotity(route.length - i); } }
+     **/
+
+    /**
+     * 
+     * @param s pass in the information of the current stop the bus is at
+     */
+    public void arrive(Location loc)
+    {
+        while (seats.peek().getEndLoc().equals(loc))
         {
             seats.remove();
         }
-        if(!this.isFull())
-        {
-            seats.add();
-        }
-        
     }
     
-    public void continueRoute(Location next)
+    /**
+     * 
+     * @param s
+     */
+    public void pickup(Stop s)
     {
-        currentLoc = next;
+        while (!this.isFull() && !s.isEmpty())
+        {
+            try
+            {
+                seats.add(s.dequeue());
+            } catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void setCurrentLoc(Location currentLoc)
-    {
-        this.currentLoc = currentLoc;
-    }
+    /**
+     * 
+     * @return Boolean whether or not you are at the end of the route
+     */
+    /**
+     * public boolean continueRoute() { if (index != route.length) { index++;
+     * currentLoc = route[index]; } else { index = 0; currentLoc = route[index]; }
+     * return index != starting; }
+     **/
+
+    /**
+     * public void setCurrentLoc(Location currentLoc) { this.currentLoc =
+     * currentLoc; }
+     **/
 
     public Boolean isFull()
     {
         return size == capacity;
+    }
+
+    public String toString()
+    {
+        return id + ": " + size;
     }
 }
