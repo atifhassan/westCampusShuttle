@@ -1,4 +1,5 @@
 import java.util.PriorityQueue;
+
 /**
  * 
  * @author Atif Hassan
@@ -79,7 +80,7 @@ public class Bus
             seats.remove();
         }
     }
-    
+
     /**
      * 
      * @param s
@@ -113,11 +114,18 @@ public class Bus
      * currentLoc; }
      **/
 
+    /**
+     * 
+     * @return
+     */
     public Boolean isFull()
     {
         return size == capacity;
     }
 
+    /**
+     * 
+     */
     public String toString()
     {
         return id + ": " + size;

@@ -8,7 +8,7 @@ import java.util.Vector;
 public class Queue
 {
     private Vector<Event> all_data;
-    
+
     public Queue()
     {
         all_data = new Vector<Event>();
