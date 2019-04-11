@@ -1,12 +1,20 @@
-public class person
+import java.util.Comparator;
+
+/**
+ * 
+ * @author Atif Hassan
+ *
+ */
+public class Person implements Comparator<Person>
 {
-    private final Location startLoc = null;
-    private final Location endLoc = null;
+    private final Location startLoc;
+    private final Location endLoc;
     private int waitTime;
 
-    public person()
+    public Person(Location start, Location end)
     {
-
+        startLoc = start;
+        endLoc = end;
     }
 
     public Location getStartLoc()
@@ -27,6 +35,12 @@ public class person
     public void setWaitTime(int waitTime)
     {
         this.waitTime = waitTime;
+    }
+
+    @Override
+    public int compare(Person p1, Person p2)
+    {
+        return p1.getEndLoc().compareTo(p2.getEndLoc());
     }
 
 }

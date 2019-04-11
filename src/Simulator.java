@@ -31,6 +31,8 @@ public class Simulator
     public EventList FutureEventList;
     public Queue Customers;
     public Rand stream;
+    private Stop[] stops;
+    private Location[] route;
 
     /**
      * 
@@ -47,6 +49,14 @@ public class Simulator
         NumberOfDepartures = 0;
         SumWaitTime = 0.0;
         wightedQueueLength = 0.0;
+        stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
+                new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
+                new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I"), };
+        route = new Location[] { new Location("West Campus", 11), new Location("Rapidan River O", 10),
+                new Location("Field House O", 9), new Location("RAC O", 8), new Location("Mason Pond O", 7),
+                new Location("Presidents Park", 6), new Location("Masonvale", 5), new Location("Rappohannock", 4),
+                new Location("RAC I", 3), new Location("Field House I", 2), new Location("Rapidan River I", 1),
+                new Location("WestCampus", 0) };
         // Create First Arrival Event
         Event evt = new Event(arrival, exponential(stream, MeanInterArrivalTime));
         FutureEventList.enqueue(evt);
