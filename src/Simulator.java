@@ -1,11 +1,85 @@
 /**
- * copied from single server queue
  * 
- * @author atifm
+ * @author Atif Hassan
  *
  */
 public class Simulator
 {
+
+    /**
+     * constant to define arrival of person at West Campus event number
+     */
+    public final static int arrivalWC = 1;
+    /**
+     * constant to define arrival of person at Rapidan River O event number
+     */
+    public final static int arrivalRR_O = 2;
+    /**
+     * constant to define arrival of person at Field House O event number
+     */
+    public final static int arrivalFH_O = 3;
+    /**
+     * constant to define arrival of person at RAC O event number
+     */
+    public final static int arrivalRAC_O = 4;
+    /**
+     * constant to define arrival of person at Mason Pond event number
+     */
+    public final static int arrivalMP = 5;
+    /**
+     * constant to define arrival of person at Presidents Park event number
+     */
+    public final static int arrivalPP = 6;
+    /**
+     * constant to define arrival of person at Masonvale event number
+     */
+    public final static int arrivalMV = 7;
+    /**
+     * constant to define arrival of person at Rappohannock event number
+     */
+    public final static int arrivalRAP = 8;
+    /**
+     * constant to define arrival of person at RAC I event number
+     */
+    public final static int arrivalRAC_I = 9;
+    /**
+     * constant to define arrival of person at RAC I event number
+     */
+    public final static int arrivalFH_I = 10;
+    /**
+     * constant to define arrival of person at RAC I event number
+     */
+    public final static int arrivalRR_I = 11;
+
+    /**
+     * constant to define bus 1 event number
+     */
+    public final static int busNext1 = 12;
+    /**
+     * constant to define bus 2 event number
+     */
+    public final static int busNext2 = 13;
+    /**
+     * constant to define bus 1 event number
+     */
+    public final static int busNext3 = 14;
+
+    public double Clock, MeanInterArrivalTime, MeanServiceTime, LastEventTime, TotalBusy, SumResponseTime, SumWaitTime,
+            wightedQueueLength;
+    public long NumberOfCustomers, Queuelength, TotalCustomers, NumberInService, NumberOfDepartures, MaxQueueLength;
+    public int counter, counters;
+    /**
+     * List of events that will happen in the future
+     */
+    public EventList FutureEventList;
+    /**
+     * Queue of arrival events
+     */
+    // public Queue People;
+    public Rand stream;
+    private Stop[] stops;
+    private Location[] route;
+
     /**
      * 
      */
@@ -15,27 +89,21 @@ public class Simulator
 
     /**
      * 
+     * @param MIAT Mean Interarrival Time
+     * @param MST  Mean Service Time
      */
-    public final static int arrival = 1;
-    /**
-     * 
-     */
-    public final static int departue = 2;
-    /**
-     * 
-     */
-    public double Clock, MeanInterArrivalTime, MeanServiceTime, LastEventTime, TotalBusy, SumResponseTime, SumWaitTime,
-            wightedQueueLength;
-    public long NumberOfCustomers, Queuelength, TotalCustomers, NumberInService, NumberOfDepartures, MaxQueueLength;
-    public int counter, counters;
-    public EventList FutureEventList;
-    public Queue Customers;
-    public Rand stream;
-    private Stop[] stops;
-    private Location[] route;
+    public Simulator(double MIAT, double MST)
+    {
+        FutureEventList = new EventList();
+        // People = new Queue();
+        stream = new Rand();
+        Clock = 0.0;
+        MeanInterArrivalTime = MIAT;
+        MeanServiceTime = MST;
+    }
 
     /**
-     * 
+     * Initialize all variables,stops, and route and start the queue
      */
     public void Initialization()
     {
@@ -57,29 +125,23 @@ public class Simulator
                 new Location("Presidents Park", 6), new Location("Masonvale", 5), new Location("Rappohannock", 4),
                 new Location("RAC I", 3), new Location("Field House I", 2), new Location("Rapidan River I", 1),
                 new Location("WestCampus", 0) };
-        // Create First Arrival Event
-        Event evt = new Event(arrival, exponential(stream, MeanInterArrivalTime));
-        FutureEventList.enqueue(evt);
+        //Have to figure out how to initiate the future event queue
+
     }
 
     /**
      * 
      * @param evt
      */
+    //NEEDS WORK
     public void ProcessArrival(Event evt)
     {
-        Customers.enqueue(evt);
+        // adds person to bus stop of the starting location
+        stops[evt.getPerson().getStartLoc()].enqueue(evt.getPerson());
         wightedQueueLength += (Clock - LastEventTime) * Queuelength;
         Queuelength++;
-        // if the server is idle, fetch the event, do statistics and put into service
-        if (NumberInService == 0)
-        {
-            ScheduleDeparture();
-        } else
-            TotalBusy += (Clock - LastEventTime); // server is busy
         // adjust max Queue Length statistics
-        if (MaxQueueLength < Queuelength)
-            MaxQueueLength = Queuelength;
+        if(MaxQueueLength < Queuelength) MaxQueueLength = Queuelength;
         // Schedule the next arrival
         Event next_arrival = new Event(arrival, Clock + exponential(stream, MeanInterArrivalTime));
         FutureEventList.enqueue(next_arrival);
@@ -93,7 +155,7 @@ public class Simulator
     {
         // get the job at the head of the queue
         NumberOfCustomers++;
-        Event depart = new Event(Simulator.departue, Clock + exponential(stream, MeanServiceTime));
+        Event depart = new Event(Simulator.departure, Clock + exponential(stream, MeanServiceTime));
         // Event depart= new Event(Simulator.departue,Clock+triangular(stream,1,3,8));
         double arrive = Customers.Get(0).get_time();
         double wait = Clock - arrive;
@@ -114,16 +176,27 @@ public class Simulator
         // if there are customers in the queue then schedule the departure of the next
         // one
         wightedQueueLength += (Clock - LastEventTime) * Queuelength;
-        if (Queuelength > 0)
-            ScheduleDeparture();
-        else
-            NumberInService = 0;
+        if(Queuelength > 0) ScheduleDeparture();
+        else NumberInService = 0;
         // measure the response time and add to the sum
         double response = (Clock - finished.get_time());
         SumResponseTime += response;
         TotalBusy += (Clock - LastEventTime);
         NumberOfDepartures++;
         LastEventTime = Clock;
+    }
+
+    /**
+     * Generates a endLocation for a person
+     * 
+     * @param start the starting location of the person
+     * @return a location along the route
+     */
+    //NEEDS WORK
+    private Location getEndLoc(int start)
+    {
+        int i = 0;
+        return route[i];
     }
 
     /**
@@ -141,10 +214,8 @@ public class Simulator
     {
         double R = rng.next();
         double x;
-        if (R <= (b - a) / (c - a))
-            x = a + Math.sqrt((b - a) * (c - a) * R);
-        else
-            x = c - Math.sqrt((c - b) * (c - a) * (1 - R));
+        if(R <= (b - a) / (c - a)) x = a + Math.sqrt((b - a) * (c - a) * R);
+        else x = c - Math.sqrt((c - b) * (c - a) * (1 - R));
         return x;
     }
 
