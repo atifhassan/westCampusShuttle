@@ -9,7 +9,8 @@ public class Person implements Comparator<Person>
 {
     private final int startLoc;
     private final Location endLoc;
-    private int waitTime;
+    private double startWait;
+    private double endWait;
 
     /**
      * 
@@ -38,25 +39,52 @@ public class Person implements Comparator<Person>
     {
         return endLoc;
     }
+    
+    /**
+     * 
+     * @return
+     */
+    public double getStartWait()
+    {
+        return startWait;
+    }
 
     /**
      * 
-     * @return the weight time for student
+     * @param startWait
      */
-    
-    public int getWaitTime()
+    public void setStartWait(double startWait)
     {
-        return waitTime;
+        this.startWait = startWait;
     }
-    
+
     /**
      * 
-     * @param waitTime
+     * @return
      */
-    public void setWaitTime(int waitTime)
+    public double getEndWait()
     {
-        this.waitTime = waitTime;
+        return endWait;
     }
+
+    /**
+     * 
+     * @param endWait
+     */
+    public void setEndWait(double endWait)
+    {
+        this.endWait = endWait;
+    }
+
+    /**
+     * 
+     * @return the wait time for student
+     */
+    public double getWaitTime()
+    {
+        return endWait-startWait;
+    }
+
 
     @Override
     /**

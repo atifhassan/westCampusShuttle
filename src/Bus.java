@@ -7,7 +7,10 @@ import java.util.PriorityQueue;
  */
 public class Bus
 {
-    // private Location currentLoc;
+    /**
+     * current location of the bus
+     */
+    private Location loc;
     private final int capacity = 24;
     private int size;
     private final char id;
@@ -18,11 +21,10 @@ public class Bus
     private PriorityQueue<Person> seats = new PriorityQueue<>(capacity);
 
     /**
-     * private Location[] route = new Location[] { new Location("West Campus"), new
-     * Location("Rapidan River O"), new Location("Field House O"), new Location("RAC
-     * O"), new Location("Mason Pond O"), new Location("Presidents Park"), new
-     * Location("Masonvale"), new Location("Rappohannock"), new Location("RAC I"),
-     * new Location("Field House I"), new Location("Rapidan River I"), };
+     * private Location[] route = new Location[] { new Location("West Campus"), new Location("Rapidan River O"), new
+     * Location("Field House O"), new Location("RAC O"), new Location("Mason Pond O"), new Location("Presidents Park"),
+     * new Location("Masonvale"), new Location("Rappohannock"), new Location("RAC I"), new Location("Field House I"),
+     * new Location("Rapidan River I"), };
      **/
 
     /**
@@ -35,9 +37,8 @@ public class Bus
 
         // currentLoc = route[index];
         /**
-         * for (int i = 0; i < route.length; i++)// sets the priority for each stop {
-         * route[i].setPriotity(route.length - i);// the earlier on the route you are
-         * the higher the priority }
+         * for (int i = 0; i < route.length; i++)// sets the priority for each stop { route[i].setPriotity(route.length
+         * - i);// the earlier on the route you are the higher the priority }
          **/
     }
 
@@ -51,10 +52,15 @@ public class Bus
         // starting = 0;
         // currentLoc = route[index];
         /**
-         * for (int i = 0; i < route.length; i++)// sets the priority for each stop {
-         * route[i].setPriotity(route.length - i);// the earlier on the route you are
-         * the higher the priority }
+         * for (int i = 0; i < route.length; i++)// sets the priority for each stop { route[i].setPriotity(route.length
+         * - i);// the earlier on the route you are the higher the priority }
          **/
+    }
+    
+    public Bus(char id,Location start)
+    {
+        this.id = id;
+        loc = start;
     }
 
     /**
@@ -63,9 +69,8 @@ public class Bus
      * @param starting give the bus a new staring stop
      */
     /**
-     * public Bus(char id, int starting) { this.starting = starting; index =
-     * starting; currentLoc = route[index]; this.id = id; for (int i = 0; i <
-     * route.length; i++) { route[(i + starting) %
+     * public Bus(char id, int starting) { this.starting = starting; index = starting; currentLoc = route[index];
+     * this.id = id; for (int i = 0; i < route.length; i++) { route[(i + starting) %
      * route.length].setPriotity(route.length - i); } }
      **/
 
@@ -73,7 +78,7 @@ public class Bus
      * 
      * @param s pass in the information of the current stop the bus is at
      */
-    public void arrive(Location loc)
+    public void arrive()
     {
         while (seats.peek().getEndLoc().equals(loc))
         {
@@ -83,36 +88,41 @@ public class Bus
 
     /**
      * 
-     * @param s
+     * @param s the current stop
+     * @param e the triggering event
      */
-    public void pickup(Stop s)
+    public void pickup(Stop s,Event e)
     {
         while (!this.isFull() && !s.isEmpty())
         {
             try
             {
-                seats.add(s.dequeue());
-            } catch (Exception e)
+                seats.add(s.dequeue(e));
+            } catch (Exception ex)
             {
-                e.printStackTrace();
+                ex.printStackTrace();
             }
         }
     }
-
+    
+    public void step()
+    {
+        loc = loc.getNext();
+    }
+    
     /**
      * 
-     * @return Boolean whether or not you are at the end of the route
+     * @param currentLoc
      */
-    /**
-     * public boolean continueRoute() { if (index != route.length) { index++;
-     * currentLoc = route[index]; } else { index = 0; currentLoc = route[index]; }
-     * return index != starting; }
-     **/
-
-    /**
-     * public void setCurrentLoc(Location currentLoc) { this.currentLoc =
-     * currentLoc; }
-     **/
+    public void setLoc(Location loc)
+    {
+        this.loc = loc;
+    }
+    
+    public Location getLoc()
+    {
+        return loc;
+    }
 
     /**
      * 
