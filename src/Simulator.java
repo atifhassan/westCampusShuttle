@@ -116,7 +116,77 @@ public class Simulator
                 new Person(genStartLoc(), genEndLoc(0)));
         FutureEventList.enqueue(first_arrival);
         // schedule all buses
-        // TODO
+        double tClock = 0.0;// 7am Monday
+        while (tClock < 7200)
+        {
+            if((tClock % 1440) > 420 && (tClock % 1440) < 1425)
+            {
+                // Schedule loop for west campus 1
+                double tClock1 = tClock;
+                // arrivals
+                FutureEventList.enqueue(new Event(busArrive1, tClock1));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 1.268));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 7.183));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 10.986));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 12.254));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 14.367));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 16.057));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 16.902));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 19.015));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1 + 22.818));
+                FutureEventList.enqueue(new Event(busArrive1, tClock1));
+                // departures
+                /*
+                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+1.268+.1)); FutureEventList.enqueue(new
+                 * Event(busDepart1, tClock1+7.183+.1)); FutureEventList.enqueue(new Event(busDepart1,
+                 * tClock1+10.986+.1)); FutureEventList.enqueue(new Event(busDepart1, tClock1+12.254+.1));
+                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+14.367+.1)); FutureEventList.enqueue(new
+                 * Event(busDepart1, tClock1+16.057+.1)); FutureEventList.enqueue(new Event(busDepart1,
+                 * tClock1+16.902+.1)); FutureEventList.enqueue(new Event(busDepart1, tClock1+19.015+.1));
+                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+22.818+.1));
+                 */
+                // Schedule loop for west campus 2
+                double tClock2 = tClock + 15.0;
+                // arrivals
+                FutureEventList.enqueue(new Event(busArrive2, tClock2));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 1.268));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 7.183));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 10.986));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 12.254));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 14.367));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.057));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.902));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 19.015));
+                FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
+                // departures
+                /*
+                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+1.268+.1)); FutureEventList.enqueue(new
+                 * Event(busDepart2, tClock2+7.183+.1)); FutureEventList.enqueue(new Event(busDepart2,
+                 * tClock2+10.986+.1)); FutureEventList.enqueue(new Event(busDepart2, tClock2+12.254+.1));
+                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+14.367+.1)); FutureEventList.enqueue(new
+                 * Event(busDepart2, tClock2+16.057+.1)); FutureEventList.enqueue(new Event(busDepart2,
+                 * tClock2+16.902+.1)); FutureEventList.enqueue(new Event(busDepart2, tClock2+19.015+.1));
+                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+22.818+.1));
+                 */
+                // accounts for break for west campus 3
+                if(!((tClock % 1440) > 645 && (tClock % 1440) < 900))
+                {
+                    // schedule loop for west campus 3
+                    double tClock3 = tClock + 10.0;
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 1.268));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 7.183));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 10.986));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 12.254));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 14.367));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.057));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.902));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 19.015));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 22.818));
+                }
+            }
+            tClock += 30;
+        }
     }
 
     /**
@@ -141,7 +211,7 @@ public class Simulator
         // if the server is idle, fetch the event, do statistics and put into service
         if(NumberInService == 0)
         {
-            //ScheduleDeparture();
+            // ScheduleDeparture();
         }
         else TotalBusy += (Clock - LastEventTime); // server is busy
         // adjust max Queue Length statistics
@@ -186,11 +256,11 @@ public class Simulator
                 throw new Exception("wrong type of event");
                 break;
         }
-        // moves to next stop
-        temp.step();
         // drops off people
         temp.arrive();
         // TODO
+        //process departure if not end of the day
+        //and in the case of west campus 3, if it's not your break
         // end of my code
         // get the customers description
         Event finished = (Event) Customers.dequeue();
@@ -231,6 +301,8 @@ public class Simulator
         }
         // picks up people
         temp.pickup(stops[route.indexOf(temp.getLoc())], e);
+        // moves to next stop
+        temp.step();
         // TODO
         // end of my code
         // get the customers description
