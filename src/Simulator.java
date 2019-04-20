@@ -186,8 +186,6 @@ public class Simulator
                 throw new Exception("wrong type of event");
                 break;
         }
-        // moves to next stop
-        temp.step();
         // drops off people
         temp.arrive();
         // TODO
@@ -231,6 +229,8 @@ public class Simulator
         }
         // picks up people
         temp.pickup(stops[route.indexOf(temp.getLoc())], e);
+        // moves to next stop
+        temp.step();
         // TODO
         // end of my code
         // get the customers description
