@@ -25,8 +25,19 @@ public class mainClass
             Event evt = sim.FutureEventList.getMin(); // get imminent event
             sim.FutureEventList.dequeue(); // delete the event
             sim.Clock = evt.get_time(); // advance in time
-            if(evt.get_type() == Simulator.arrival) sim.ProcessArrival(evt);
-            else sim.ProcessBusArrive(evt);
+            System.out.println(evt.get_type());
+            if(evt.get_type() == Simulator.arrival)
+            {
+                sim.ProcessArrival(evt);
+            }
+            else
+            {
+                try {
+                sim.ProcessBusArrive(evt);
+                }catch(Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
         }
         sim.ReportGeneration();
     }
