@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 
 /**
- * 
+ *
  * @author Atif Hassan
  *
  */
@@ -38,7 +38,7 @@ public class Simulator
     public final static int busDepart3 = 30;
 
     public double Clock, MeanInterArrivalTime, MeanServiceTime, LastEventTime, TotalBusy, SumResponseTime, SumWaitTime,
-            wightedQueueLength;
+            wightedQueueLength,busUtilization;
     public long NumberOfCustomers, Queuelength, TotalCustomers, NumberInService, NumberOfDepartures, MaxQueueLength;
     public int counter, counters;
     /**
@@ -53,16 +53,17 @@ public class Simulator
     private Stop[] stops;
     private ArrayList<Location> route;
     private Bus[] fleet;
-
+    private double[] waitTime;
+    private double[] maxWaitTime;
     /**
-     * 
+     *
      */
     public Simulator()
     {
     }
 
     /**
-     * 
+     *
      * @param MIAT Mean Interarrival Time
      * @param MST  Mean Service Time
      */
@@ -90,6 +91,8 @@ public class Simulator
         NumberOfDepartures = 0;
         SumWaitTime = 0.0;
         wightedQueueLength = 0.0;
+        waitTime = new double[] {0,0,0,0,0,0,0,0,0,0,0}
+        maxWaitTime = new double[] {0,0,0,0,0,0,0,0,0,0,0}
         stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
@@ -121,7 +124,7 @@ public class Simulator
 
     /**
      * INCOMPLETE!!!
-     * 
+     *
      * @param evt
      */
     public void ProcessArrival(Event evt)
@@ -165,9 +168,89 @@ public class Simulator
 
     /**
      * INCOMPLETE!!! Was ScheduleDeparture
-     * 
+     *
      * @param e
      */
+     public void processBus(Event e) throws Exception
+     {
+       //Identify which bus
+       Bus temp = null;
+       int timeDif = Clock - LastEventTime;
+       switch (e.get_type())
+       {
+           case 2:
+               temp = fleet[0];
+               busUtilization += timeDif * temp.getSize();
+               temp.arrive();
+               if(Clock = busBreakTime1)
+               {
+                 if(temp.getSize() != 0)
+                 {
+                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
+                 }
+                 return;
+               }
+               break;
+           case 3:
+               temp = fleet[1];
+               busUtilization += timeDif * temp.getSize();
+               temp.arrive();
+               if(Clock = busBreakTime2)
+               {
+                 if(temp.getSize() != 0)
+                 {
+                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
+                 }
+                 return;
+               }
+               break;
+           case 4:
+               temp = fleet[2];
+               busUtilization += timeDif * temp.getSize();
+               temp.arrive();
+               if(Clock = busBreakTime3)
+               {
+                 if(temp.getSize() != 0)
+                 {
+                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
+                 }
+                 return;
+               }
+               break;
+           default:
+               throw new Exception("wrong type of event");
+               break;
+       }
+      //Update average bus capacity statistic
+      //Appropriate passengers leave
+      //Check if bus takes break - this might be complicated, will probably to have to cardcope time/bus pairings
+
+      //Call bus pickup
+      //create temp stop
+      Stop s;
+      int index = 0;
+      //for loop cycles through stop array and compares bus' loc to figure out which stop it's at and stores it in temp stop variable
+      for(int i = 0; i < 11; i++)
+      {
+        if(temp.getLoc().equals(stops[i]))
+        {
+          s = stops[i];
+          index = i;
+          break;
+        }
+      }
+      //uses temp stop variable to call pickup
+      double[] d = temp.pickup(s, e, maxWaitTime[index]);
+
+      waitTime[index] += d[0];
+      maxWaitTime[index] = d[1];
+      //update stops max/average wait time statistic - might have to be done with pickup
+
+      //Move bus to next stop
+      temp.step();
+      //May have to drop off remaining passengers here if going to be on break
+
+    }
     public void ProcessBusArrive(Event e)
     {
         Bus temp = null;
@@ -206,7 +289,7 @@ public class Simulator
 
     /**
      * INCOMPLETE!!!
-     * 
+     *
      * @param e
      */
     public void ProcessBusDepart(Event e)
@@ -249,7 +332,7 @@ public class Simulator
 
     /**
      * INCOMPLETE!!! Randomly generates a starting location for each person
-     * 
+     *
      * @return the starting location
      */
     // TODO
@@ -261,7 +344,7 @@ public class Simulator
 
     /**
      * INCOMPLETE!!! Generates a endLocation for a person
-     * 
+     *
      * @param start the starting location of the person
      * @return a location along the route
      */
@@ -272,7 +355,7 @@ public class Simulator
     }
 
     /**
-     * 
+     *
      * @param rng
      * @param mean
      * @return

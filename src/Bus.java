@@ -1,7 +1,7 @@
 import java.util.PriorityQueue;
 
 /**
- * 
+ *
  * @author Atif Hassan
  *
  */
@@ -43,7 +43,7 @@ public class Bus
     }
 
     /**
-     * 
+     *
      * @param id identification for bus
      */
     public Bus(char id)
@@ -56,7 +56,7 @@ public class Bus
          * - i);// the earlier on the route you are the higher the priority }
          **/
     }
-    
+
     public Bus(char id,Location start)
     {
         this.id = id;
@@ -64,7 +64,7 @@ public class Bus
     }
 
     /**
-     * 
+     *
      * @param id       identification number for bus
      * @param starting give the bus a new staring stop
      */
@@ -75,9 +75,13 @@ public class Bus
      **/
 
     /**
-     * 
+     *
      * @param s pass in the information of the current stop the bus is at
      */
+    public char getID()
+    {
+       return id;
+    }
     public void arrive()
     {
         while (seats.peek().getEndLoc().equals(loc))
@@ -87,45 +91,56 @@ public class Bus
     }
 
     /**
-     * 
+     *
      * @param s the current stop
      * @param e the triggering event
      */
-    public void pickup(Stop s,Event e)
+    public double[] pickup(Stop s,Event e, int maxWait)
     {
+        Person temp;
+        int newMaxWait = maxWait;
+        int waitTime = 0;
         while (!this.isFull() && !s.isEmpty())
         {
             try
             {
-                seats.add(s.dequeue(e));
-            } catch (Exception ex)
+                temp = s.dequeue(e);
+                seats.add(temp);
+                waitTime += temp.getWaitTime();
+                if(newMaxWait < temp.getWaitTime())
+                {
+                  newMaxWait = temp.getWaitTime();
+                }
+            }
+            catch (Exception ex)
             {
                 ex.printStackTrace();
             }
         }
+        return new double[]{waitTime,newMaxWait};
     }
-    
+
     public void step()
     {
         loc = loc.getNext();
     }
-    
+
     /**
-     * 
+     *
      * @param currentLoc
      */
     public void setLoc(Location loc)
     {
         this.loc = loc;
     }
-    
+
     public Location getLoc()
     {
         return loc;
     }
 
     /**
-     * 
+     *
      * @return
      */
     public Boolean isFull()
@@ -134,8 +149,12 @@ public class Bus
     }
 
     /**
-     * 
+     *
      */
+    public int getSize()
+    {
+      return size;
+    }
     public String toString()
     {
         return id + ": " + size;

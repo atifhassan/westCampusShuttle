@@ -10,6 +10,7 @@ public class Stop
     private int head = 0;
     private int tail = 0;
     private int size = 0;
+    private int totalArrivals = 0;
 
     public Stop(String name)
     {
@@ -56,6 +57,7 @@ public class Stop
         else
             head++;
         size--;
+        totalArrivals++;
         return temp;
     }
 
@@ -67,6 +69,10 @@ public class Stop
     public String toString()
     {
         return name + ": " + size;
+    }
+    public int getTotalArrivals()
+    {
+      return totalArrivals;
     }
 
 }
