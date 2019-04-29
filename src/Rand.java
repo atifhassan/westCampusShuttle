@@ -6,11 +6,27 @@ public class Rand
     // setting the seed x0.
     long x;
 
+    /**
+     * 
+     */
     public Rand()
     {
         x = 123457;
     }
 
+    /**
+     * 
+     * @param seed
+     */
+    public Rand(long seed)
+    {
+        x = seed;
+    }
+    
+    /**
+     * 
+     * @return
+     */
     double next()
     {
         // Calculate next value in sequence.

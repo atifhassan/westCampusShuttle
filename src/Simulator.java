@@ -24,18 +24,7 @@ public class Simulator
      * constant to define bus 1 event number
      */
     public final static int busArrive3 = 3;
-    /**
-     * constant to define bus 1 event number
-     */
-    public final static int busDepart1 = 10;
-    /**
-     * constant to define bus 2 event number
-     */
-    public final static int busDepart2 = 20;
-    /**
-     * constant to define bus 1 event number
-     */
-    public final static int busDepart3 = 30;
+
     public double[] wightedQueueLength, totalBusy;
     public double Clock, MeanInterArrivalTime, MeanServiceTime, LastEventTime, SumResponseTime, SumWaitTime,
             maxWaitTime;
@@ -185,6 +174,7 @@ public class Simulator
                     FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.902));
                     FutureEventList.enqueue(new Event(busArrive3, tClock3 + 19.015));
                     FutureEventList.enqueue(new Event(busArrive3, tClock3 + 22.818));
+                    FutureEventList.enqueue(new Event(busArrive3, tClock3 + 30));
                 }
             }
             tClock += 30;
@@ -196,7 +186,7 @@ public class Simulator
      * 
      * @param evt
      */
-    public void ProcessArrival(Event evt)
+    public void processArrival(Event evt)
     {
         int index = evt.getPerson().getStartLoc();
         // adds person to bus stop of the starting location
@@ -234,7 +224,7 @@ public class Simulator
      * @param e the event the be processed
      * @throws Exception the wrong type of event is passed
      */
-    public void ProcessBusArrive(Event e) throws Exception
+    public void processBus(Event e) throws Exception
     {
         Bus temp = null;
         switch (e.get_type())
@@ -265,7 +255,7 @@ public class Simulator
      * @param e the event to be processed
      * @throws Exception the wrong type of event is passed
      */
-    public void ProcessBusDepart(Event e) throws Exception
+    public void busPickup(Event e) throws Exception
     {
         Bus temp = null;
         switch (e.get_type())
@@ -376,7 +366,7 @@ public class Simulator
 
         }
         System.out.println("\n  Average Number Of Customers In Queue       " + AverageQueueLength);
-        System.out.printf("\nMaximum Length of Queues:\n");
+        System.out.printf("\nAverage Maximum Length of Queues:\n");
         index= 0;
         for(double i : maxQueueLength)
         {
