@@ -12,21 +12,39 @@ public class Stop
     private int size = 0;
     private int totalArrivals = 0;
 
+    /**
+     * 
+     * @param name
+     */
     public Stop(String name)
     {
         this.name = name;
     }
 
+    /**
+     * 
+     * @return
+     */
     public boolean isEmpty()
     {
         return size == 0;
     }
 
-    public int size()
+    /**
+     * 
+     * @return
+     */
+    public int getSize()
     {
         return size;
     }
 
+    /**
+     * 
+     * @param p
+     * @param e
+     * @throws Exception
+     */
     public void enqueue(Person p, Event e) throws Exception
     {
         if (size == capacity)
@@ -41,11 +59,21 @@ public class Stop
 
     }
 
+    /**
+     * 
+     * @return
+     */
     public Person peek()
     {
         return line[head];
     }
 
+    /**
+     * 
+     * @param e
+     * @return
+     * @throws Exception
+     */
     public Person dequeue(Event e) throws Exception
     {
         if (this.isEmpty())
@@ -61,11 +89,18 @@ public class Stop
         return temp;
     }
 
+    /**
+     * 
+     * @return
+     */
     public String getName()
     {
         return name;
     }
 
+    /**
+     * 
+     */
     public String toString()
     {
         return name + ": " + size;

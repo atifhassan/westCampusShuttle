@@ -32,6 +32,12 @@ public class Event
         time = _time;
     }
     
+    /**
+     * 
+     * @param _type
+     * @param _time
+     * @param _person
+     */
     public Event(int _type, double _time, Person _person)
     {
         type = _type;
