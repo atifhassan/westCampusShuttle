@@ -5,6 +5,9 @@
  */
 public class Location implements Comparable<Location>
 {
+    /**
+     * 
+     */
     private final String name;
     /**
      * how soon along the route is the location
@@ -15,6 +18,10 @@ public class Location implements Comparable<Location>
      */
     private Location next;
 
+    /**
+     * 
+     * @param name
+     */
     public Location(String name)
     {
         this.name = name;
@@ -57,7 +64,7 @@ public class Location implements Comparable<Location>
     {
         this.priority = priotity;
     }
-    
+
     /**
      * 
      * @return
@@ -77,13 +84,16 @@ public class Location implements Comparable<Location>
     }
 
     @Override
+    /**
+     * @param L
+     */
     public int compareTo(Location L)
     {
-        if ((L).getPriotity() > priority)
+        if((L).getPriotity() > priority)
         {
             return 1;
         }
-        if ((L).getPriotity() < priority)
+        if((L).getPriotity() < priority)
         {
             return -1;
         }
@@ -91,6 +101,9 @@ public class Location implements Comparable<Location>
     }
 
     @Override
+    /**
+     * @param o
+     */
     public boolean equals(Object o)
     {
         return ((Location) o).getName().equals(name);

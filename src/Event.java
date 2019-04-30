@@ -15,7 +15,7 @@ public class Event
      * the type of event
      */
     private int type;
-    
+
     /**
      * person associated with event
      */
@@ -31,13 +31,19 @@ public class Event
         type = _type;
         time = _time;
     }
-    
+
+    /**
+     * 
+     * @param _type
+     * @param _time
+     * @param _person
+     */
     public Event(int _type, double _time, Person _person)
     {
         type = _type;
         time = _time;
         person = _person;
-        
+
     }
 
     /**
@@ -66,5 +72,5 @@ public class Event
     {
         return person;
     }
-    
+
 }

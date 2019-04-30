@@ -31,7 +31,7 @@ public class Queue
 
     /**
      * 
-     * @return 
+     * @return
      */
     public Event dequeue()
     {
@@ -49,5 +49,5 @@ public class Queue
     {
         return all_data.elementAt(i);
     }
-    
+
 }
