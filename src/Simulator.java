@@ -1,3 +1,5 @@
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 /**
@@ -26,62 +28,62 @@ public class Simulator
     public final static int busArrive3 = 3;
 
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
-    public double[] wightedQueueLength, totalBusy, waitTime, maxWaitTime, busUtilization;
+    public double[] accumulatedQueueLength, totalBusy, waitTime, maxWaitTime, accumulatedBusUtilization;
     /**
-     * 
+     * the end of day for each bus
      */
     public final double[] busBreakTime = { 1050, 1065, 1060 };
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     public double Clock, MeanInterArrivalTime, LastEventTime, SumResponseTime, SumWaitTime;
     /**
-     * 
+     *
      */
     public long[] maxQueueLength;
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     /**
-     * 
+     *
      */
     public long passengerCount, Queuelength, passangerTotal, NumberInService, NumberOfDepartures;
 
@@ -91,19 +93,19 @@ public class Simulator
      **/
     public EventList FutureEventList;
     /**
-     * 
+     *
      */
     public Rand stream;
     /**
-     * 
+     *
      */
     private Stop[] stops;
     /**
-     * 
+     *
      */
     private ArrayList<Location> route;
     /**
-     * 
+     *
      */
     private Bus[] fleet;
 
@@ -129,11 +131,11 @@ public class Simulator
         Queuelength = 0;
         LastEventTime = 0.0;
         totalBusy = new double[] { 0.0, 0.0, 0.0 };
-        busUtilization = new double[] { 0.0, 0.0, 0.0 };
+        accumulatedBusUtilization = new double[] { 0.0, 0.0, 0.0 };
         maxQueueLength = new long[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         NumberOfDepartures = 0;
         SumWaitTime = 0.0;
-        wightedQueueLength = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
+        accumulatedQueueLength = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
         waitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         maxWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
@@ -201,7 +203,7 @@ public class Simulator
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
 
                 // accounts for break for west campus 3
-                if(!((tClock % 1440) > 645 && (tClock % 1440) < 900))
+                if(!((tClock % 1440) >= 645 && (tClock % 1440) <= 900))
                 {
                     // schedule loop for west campus 3
                     double tClock3 = tClock + 10.0;
@@ -237,8 +239,8 @@ public class Simulator
             System.out.print(stops);
             e.printStackTrace();
         }
-        // Updates wightedQueueLength statistic
-        wightedQueueLength[index] += (Clock - LastEventTime) * stops[index].getSize();
+        // Updates accumulatedQueueLength statistic
+        accumulatedQueueLength[index] += (Clock - LastEventTime) * stops[index].getSize();
 
         // adjust max Queue Length statistics
         if(maxQueueLength[index] < stops[index].getSize())
@@ -275,7 +277,7 @@ public class Simulator
             case 1:
                 b = 0;
                 temp = fleet[b];
-                busUtilization[b] += timeDif * temp.getSize();
+                accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
                 if(Clock % 1440 == busBreakTime[b])
                 {
@@ -291,7 +293,7 @@ public class Simulator
             case 2:
                 b = 1;
                 temp = fleet[b];
-                busUtilization[b] += timeDif * temp.getSize();
+                accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
                 if(Clock % 1440 == busBreakTime[b])
                 {
@@ -306,9 +308,9 @@ public class Simulator
             case 3:
                 b = 2;
                 temp = fleet[b];
-                busUtilization[b] += timeDif * temp.getSize();
+                accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
-                if(Clock % 1440 == busBreakTime[b])
+                if(Clock % 1440 == busBreakTime[b] || (Clock % 1440) == 645)
                 {
                     if(temp.getSize() != 0)
                     {
@@ -347,7 +349,7 @@ public class Simulator
 
     /**
      * Randomly generates a starting location for each person
-     * 
+     *
      * @param time the current time
      * @return the starting location
      */
@@ -413,47 +415,64 @@ public class Simulator
 
     /**
      *
+     * @param rng random number stream
+     * @param mean
+     * @param std standard deviation
+     * @return
      */
+    public static double normal(Rand rng, double mean, double std)
+    {
+        return (1 / (std * Math.sqrt(2 * Math.PI))
+                * Math.pow(Math.E, -Math.pow(rng.next() - mean, 2.0) / (2 * Math.pow(std, 2.0))));
+    }
+
     /**
-     * 
+     *
      */
     public void ReportGeneration()
     {
-        System.out.printf("REPORT:\n");
-        System.out.printf("------------------\n");
-        System.out.printf("\n>BUS STATISTICS:\n");
-        double[] RHO = new double[3];
-        int index = 0;
-        for (int i = 0; i < RHO.length; i++)
+        try
         {
-            RHO[i] = busUtilization[i++] / Clock;
-        }
-        System.out.printf("\n>>Utilization\n");
-        index = 0;
-        for (double i : busUtilization)
-        {
-            System.out.printf("\tWest Campus %d:\t\t%f\n", 1 + index++, i);
-        }
+            PrintWriter out = new PrintWriter("output.txt");
+            out.printf("REPORT:\n");
+            out.printf("------------------\n");
+            out.printf("\n>BUS STATISTICS:\n");
+            double[] RHO = new double[3];
+            int index = 0;
+            for (int i = 0; i < RHO.length; i++)
+            {
+                RHO[i] = accumulatedBusUtilization[i++] / Clock;
+            }
+            out.printf("\n>>Utilization\n");
+            index = 0;
+            for (double i : RHO)
+            {
+                out.printf("\tWest Campus %d:\t\t%f\n", 1 + index++, i);
+            }
 
-        // *******************
-        System.out.printf("\n>STOP STATISTICS\n");
-        double AverageQueueLength[] = new double[11];
-        for (int i = 0; i < AverageQueueLength.length; i++)
-        {
-            AverageQueueLength[i] = wightedQueueLength[i] / Clock;
-        }
-        System.out.printf("\n>>Average Number Of People In Queue:\n");
-        index = 0;
-        for (double i : AverageQueueLength)
-        {
-            System.out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
-        }
+            out.printf("\n>STOP STATISTICS\n");
+            double AverageQueueLength[] = new double[11];
+            for (int i = 0; i < AverageQueueLength.length; i++)
+            {
+                AverageQueueLength[i] = accumulatedQueueLength[i] / Clock;
+            }
+            out.printf("\n>>Average Number Of People In Queue:\n");
+            index = 0;
+            for (double i : AverageQueueLength)
+            {
+                out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
+            }
 
-        System.out.printf("\n>>Average Maximum Length of Queues:\n");
-        index = 0;
-        for (double i : maxQueueLength)
+            out.printf("\n>>Average Maximum Length of Queues:\n");
+            index = 0;
+            for (double i : maxQueueLength)
+            {
+                out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
+            }
+            out.close();
+        } catch (FileNotFoundException e)
         {
-            System.out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
+            e.printStackTrace();
         }
     }
 }
