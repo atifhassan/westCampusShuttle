@@ -22,7 +22,7 @@ public class Rand
     {
         x = seed;
     }
-    
+
     /**
      * 
      * @return

@@ -25,65 +25,117 @@ public class Simulator
      */
     public final static int busArrive3 = 3;
 
-    public double[] wightedQueueLength, totalBusy;
-    public double Clock, MeanInterArrivalTime, MeanServiceTime, LastEventTime, SumResponseTime, SumWaitTime,
-            maxWaitTime;
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    public double[] wightedQueueLength, totalBusy, waitTime, maxWaitTime, busUtilization;
+    /**
+     * 
+     */
+    public final double[] busBreakTime = { 1050, 1065, 1060 };
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    public double Clock, MeanInterArrivalTime, LastEventTime, SumResponseTime, SumWaitTime;
+    /**
+     * 
+     */
     public long[] maxQueueLength;
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
+    /**
+     * 
+     */
     public long passengerCount, Queuelength, passangerTotal, NumberInService, NumberOfDepartures;
-    public int counter, counters;
+
     /**
      * List of events that will happen in the future
      *
      **/
     public EventList FutureEventList;
     /**
-     * Queue of arrival events
+     * 
      */
-    // public Queue People;
     public Rand stream;
-    private Stop[] stops;
-    private ArrayList<Location> route;
-    private Bus[] fleet;
-    private double[] waitTime;
-    private double[] maxWaitTime;
     /**
-     *
+     * 
      */
-    public Simulator()
-    {
-    }
+    private Stop[] stops;
+    /**
+     * 
+     */
+    private ArrayList<Location> route;
+    /**
+     * 
+     */
+    private Bus[] fleet;
 
     /**
      *
      * @param MIAT Mean Interarrival Time
-     * @param MST  Mean Service Time
      */
-    public Simulator(double MIAT, double MST)
+    public Simulator(double MIAT)
     {
         FutureEventList = new EventList();
         stream = new Rand();
-        Clock = 0.0;
+        Clock = 360.0;
         MeanInterArrivalTime = MIAT;
-        MeanServiceTime = MST;
+        this.initialize();
     }
 
     /**
-     * INCOMPLETE!!! Initialize all variables,stops, and route and start the queue
+     * Initialize all variables,stops, and route and start the queue
      */
-    public void Initialization()
+    private void initialize()
     {
-        Clock = 0.0;
         NumberInService = 0;
         Queuelength = 0;
         LastEventTime = 0.0;
         totalBusy = new double[] { 0.0, 0.0, 0.0 };
+        busUtilization = new double[] { 0.0, 0.0, 0.0 };
         maxQueueLength = new long[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        SumResponseTime = 0.0;
         NumberOfDepartures = 0;
         SumWaitTime = 0.0;
         wightedQueueLength = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-        waitTime = new double[] {0,0,0,0,0,0,0,0,0,0,0}
-        maxWaitTime = new double[] {0,0,0,0,0,0,0,0,0,0,0}
+        waitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        maxWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
@@ -99,24 +151,28 @@ public class Simulator
         route.add(new Location("RAC I", 3));
         route.add(new Location("Field House I", 2));
         route.add(new Location("Rapidan River I", 1));
+
         // sets the next location along the route
         for (int i = 0; i < route.size(); i++)
         {
-            route.get(i).setNext(route.get((i++) % 11));
+            route.get(i).setNext(route.get((i + 1) % 11));
         }
         fleet = new Bus[] { new Bus('1', route.get(0)), new Bus('2', route.get(0)), new Bus('3', route.get(0)) };
+
         // schedule first arrival
-        Event first_arrival = new Event(arrival, Clock + exponential(stream, MeanInterArrivalTime),
-                new Person(genStartLoc(), genEndLoc(0)));
+        double time = uniform(stream, 1, 10);
+        Event first_arrival = new Event(arrival, Clock + time, new Person(genStartLoc(time), genEndLoc(0)));
         FutureEventList.enqueue(first_arrival);
+
         // schedule all buses
-        double tClock = 0.0;// 7am Monday
+        double tClock = 0.0;// temp clock 7am Monday
         while (tClock < 7200)
         {
             if((tClock % 1440) > 420 && (tClock % 1440) < 1425)
             {
                 // Schedule loop for west campus 1
                 double tClock1 = tClock;
+
                 // arrivals
                 FutureEventList.enqueue(new Event(busArrive1, tClock1));
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 1.268));
@@ -128,19 +184,10 @@ public class Simulator
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 16.902));
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 19.015));
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 22.818));
-                FutureEventList.enqueue(new Event(busArrive1, tClock1));
-                // departures
-                /*
-                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+1.268+.1)); FutureEventList.enqueue(new
-                 * Event(busDepart1, tClock1+7.183+.1)); FutureEventList.enqueue(new Event(busDepart1,
-                 * tClock1+10.986+.1)); FutureEventList.enqueue(new Event(busDepart1, tClock1+12.254+.1));
-                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+14.367+.1)); FutureEventList.enqueue(new
-                 * Event(busDepart1, tClock1+16.057+.1)); FutureEventList.enqueue(new Event(busDepart1,
-                 * tClock1+16.902+.1)); FutureEventList.enqueue(new Event(busDepart1, tClock1+19.015+.1));
-                 * FutureEventList.enqueue(new Event(busDepart1, tClock1+22.818+.1));
-                 */
+
                 // Schedule loop for west campus 2
                 double tClock2 = tClock + 15.0;
+
                 // arrivals
                 FutureEventList.enqueue(new Event(busArrive2, tClock2));
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 1.268));
@@ -152,16 +199,7 @@ public class Simulator
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.902));
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 19.015));
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
-                // departures
-                /*
-                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+1.268+.1)); FutureEventList.enqueue(new
-                 * Event(busDepart2, tClock2+7.183+.1)); FutureEventList.enqueue(new Event(busDepart2,
-                 * tClock2+10.986+.1)); FutureEventList.enqueue(new Event(busDepart2, tClock2+12.254+.1));
-                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+14.367+.1)); FutureEventList.enqueue(new
-                 * Event(busDepart2, tClock2+16.057+.1)); FutureEventList.enqueue(new Event(busDepart2,
-                 * tClock2+16.902+.1)); FutureEventList.enqueue(new Event(busDepart2, tClock2+19.015+.1));
-                 * FutureEventList.enqueue(new Event(busDepart2, tClock2+22.818+.1));
-                 */
+
                 // accounts for break for west campus 3
                 if(!((tClock % 1440) > 645 && (tClock % 1440) < 900))
                 {
@@ -185,8 +223,6 @@ public class Simulator
     }
 
     /**
-     * INCOMPLETE!!!
-     *
      * @param evt
      */
     public void processArrival(Event evt)
@@ -198,202 +234,146 @@ public class Simulator
             stops[index].enqueue(evt.getPerson(), evt);
         } catch (Exception e)
         {
+            System.out.print(stops);
             e.printStackTrace();
         }
         // Updates wightedQueueLength statistic
-        wightedQueueLength[index] += (Clock - LastEventTime) * stops[index].size();
+        wightedQueueLength[index] += (Clock - LastEventTime) * stops[index].getSize();
 
         // adjust max Queue Length statistics
-        if(maxQueueLength[index] < stops[index].size())
+        if(maxQueueLength[index] < stops[index].getSize())
         {
-            maxQueueLength[index] = stops[index].size();
+            maxQueueLength[index] = stops[index].getSize();
         }
-        // TODO
+        double time = uniform(stream, 5, 10);
+        Event next_arrival = null;
+        if((Clock % 1440 < 360))
+        {
+            next_arrival = new Event(arrival, Clock - (Clock % 1440) + 360 + time,
+                    new Person(genStartLoc(time), genEndLoc(0)));
+
+        }
+        else
+        {
+            next_arrival = new Event(arrival, Clock + time, new Person(genStartLoc(time), genEndLoc(0)));
+        }
+        FutureEventList.enqueue(next_arrival);
+        LastEventTime = evt.get_time();
     }
 
     /**
-     * Removed: No longer needed
-     */
-    /**
-     * public void ScheduleDeparture() { // get the job at the head of the queue NumberOfCustomers++; Event depart = new
-     * Event(Simulator.departure, Clock + exponential(stream, MeanServiceTime)); // Event depart= new
-     * Event(Simulator.departue,Clock+triangular(stream,1,3,8)); double arrive = Customers.Get(0).get_time(); double
-     * wait = Clock - arrive; SumWaitTime += wait; FutureEventList.enqueue(depart); NumberInService = 1; Queuelength--;
-     * }
-     **/
-
-    /**
-     * INCOMPLETE!!! Was ScheduleDeparture
-     *
      * @param e
-     */
-     public void processBus(Event e) throws Exception
-     {
-       //Identify which bus
-       Bus temp = null;
-       int timeDif = Clock - LastEventTime;
-       switch (e.get_type())
-       {
-           case 2:
-               temp = fleet[0];
-               busUtilization += timeDif * temp.getSize();
-               temp.arrive();
-               if(Clock = busBreakTime1)
-               {
-                 if(temp.getSize() != 0)
-                 {
-                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
-                 }
-                 return;
-               }
-               break;
-           case 3:
-               temp = fleet[1];
-               busUtilization += timeDif * temp.getSize();
-               temp.arrive();
-               if(Clock = busBreakTime2)
-               {
-                 if(temp.getSize() != 0)
-                 {
-                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
-                 }
-                 return;
-               }
-               break;
-           case 4:
-               temp = fleet[2];
-               busUtilization += timeDif * temp.getSize();
-               temp.arrive();
-               if(Clock = busBreakTime3)
-               {
-                 if(temp.getSize() != 0)
-                 {
-                   throws new Exception("Bus" + temp.getID() + "not empty when on break")
-                 }
-                 return;
-               }
-               break;
-           default:
-               throw new Exception("wrong type of event");
-               break;
-       }
-      //Update average bus capacity statistic
-      //Appropriate passengers leave
-      //Check if bus takes break - this might be complicated, will probably to have to cardcope time/bus pairings
-
-      //Call bus pickup
-      //create temp stop
-      Stop s;
-      int index = 0;
-      //for loop cycles through stop array and compares bus' loc to figure out which stop it's at and stores it in temp stop variable
-      for(int i = 0; i < 11; i++)
-      {
-        if(temp.getLoc().equals(stops[i]))
-        {
-          s = stops[i];
-          index = i;
-          break;
-        }
-      }
-      //uses temp stop variable to call pickup
-      double[] d = temp.pickup(s, e, maxWaitTime[index]);
-
-      waitTime[index] += d[0];
-      maxWaitTime[index] = d[1];
-      //update stops max/average wait time statistic - might have to be done with pickup
-
-      //Move bus to next stop
-      temp.step();
-      //May have to drop off remaining passengers here if going to be on break
-
-    }
-    public void ProcessBusArrive(Event e)
-     *
-     * @param e the event the be processed
-     * @throws Exception the wrong type of event is passed
+     * @throws Exception
      */
     public void processBus(Event e) throws Exception
     {
         Bus temp = null;
+        int b = -1;
+        double timeDif = Clock - LastEventTime;
         switch (e.get_type())
         {
             case 1:
-                temp = fleet[0];
+                b = 0;
+                temp = fleet[b];
+                busUtilization[b] += timeDif * temp.getSize();
+                temp.arrive();
+                if(Clock % 1440 == busBreakTime[b])
+                {
+                    // checks if bus is empty
+                    if(temp.getSize() != 0)
+                    {
+                        throw new Exception("Bus" + temp.getID() + "not empty when on break");
+                    }
+                    return;
+                }
+                this.busPickup(e, temp);
                 break;
             case 2:
-                temp = fleet[1];
+                b = 1;
+                temp = fleet[b];
+                busUtilization[b] += timeDif * temp.getSize();
+                temp.arrive();
+                if(Clock % 1440 == busBreakTime[b])
+                {
+                    if(temp.getSize() != 0)
+                    {
+                        throw new Exception("Bus" + temp.getID() + "not empty when on break");
+                    }
+                    return;
+                }
+                this.busPickup(e, temp);
                 break;
             case 3:
-                temp = fleet[2];
+                b = 2;
+                temp = fleet[b];
+                busUtilization[b] += timeDif * temp.getSize();
+                temp.arrive();
+                if(Clock % 1440 == busBreakTime[b])
+                {
+                    if(temp.getSize() != 0)
+                    {
+                        throw new Exception("Bus" + temp.getID() + "not empty when on break");
+                    }
+                    return;
+                }
+                this.busPickup(e, temp);
                 break;
             default:
                 throw new Exception("wrong type of event");
         }
-        // drops off people
-        temp.arrive();
-        // TODO
-        // process departure if not end of the day
-        // and in the case of west campus 3, if it's not your break
-        // end of my code
+        LastEventTime = e.get_time();
     }
 
     /**
-     * INCOMPLETE!!!
-     *
-     * @param e the event to be processed
+     * @param e   the event to be processed
+     * @param bus the bus being used
      * @throws Exception the wrong type of event is passed
      */
-    public void busPickup(Event e) throws Exception
+    private void busPickup(Event e, Bus bus) throws Exception
     {
-        Bus temp = null;
-        switch (e.get_type())
-        {
-            case 10:
-                temp = fleet[0];
-                break;
-            case 20:
-                temp = fleet[1];
-                break;
-            case 30:
-                temp = fleet[2];
-                break;
-            default:
-                throw new Exception("wrong type of event");
-        }
-        // picks up people
-        temp.pickup(stops[route.indexOf(temp.getLoc())], e);
-        // moves to next stop
-        temp.step();
-        // TODO
-        // end of my code
+        // Call bus pickup
+        int index = 0;
+        // uses temp stop variable to call pickup
+        double[] d = bus.pickup(stops[route.indexOf(bus.getLoc())], e, maxWaitTime[index]);
+
+        waitTime[index] += d[0];
+        maxWaitTime[index] = d[1];
+        // update stops max/average wait time statistic - might have to be done with pickup
+
+        // Move bus to next stop
+        bus.step();
+        // May have to drop off remaining passengers here if going to be on break
     }
 
     /**
-     * INCOMPLETE!!! Randomly generates a starting location for each person
-     *
+     * Randomly generates a starting location for each person
+     * 
+     * @param time the current time
      * @return the starting location
      */
-    // TODO
-    private int genStartLoc()
+    private int genStartLoc(double time)
     {
-
-        return (int) (Math.random() * 12);
+        /*
+         * double temp = Math.random(); double wcP, rroP, fhoP, racoP, mpoP, ppP, mvP, rapP, raciP, fhiP, rriP; wcP =
+         * -0.15 * Math.log(time) + 0.8423; rroP = -0.15 * Math.log(time) + 0.8423; fhoP = -0.15 * Math.log(time) +
+         * 0.8423; racoP = -0.15 * Math.log(time) + 0.8423; mpoP = -0.15 * Math.log(time) + 0.8423; ppP = -0.15 *
+         * Math.log(time) + 0.8423; mvP = -0.15 * Math.log(time) + 0.8423; rapP = -0.15 * Math.log(time) + 0.8423; raciP
+         * = -0.15 * Math.log(time) + 0.8423; fhiP = -0.15 * Math.log(time) + 0.8423; rriP = -0.15 * Math.log(time) +
+         * 0.8423;
+         */
+        return (int) (Math.random() * 11);
     }
 
     /**
-     * INCOMPLETE!!! Generates a endLocation for a person
-     *
      * @param start the starting location of the person
      * @return a location along the route
      */
-    // TODO
     private Location genEndLoc(int start)
     {
-        return route.get((int) ((Math.random() * (12 - start) + start)));
+        return route.get((int) ((Math.random() * (11 - start) + start)));
     }
 
     /**
-     *
      * @param rng
      * @param mean
      * @return
@@ -421,7 +401,6 @@ public class Simulator
     }
 
     /**
-     *
      * @param rng
      * @param a
      * @param b
@@ -435,30 +414,46 @@ public class Simulator
     /**
      *
      */
+    /**
+     * 
+     */
     public void ReportGeneration()
     {
+        System.out.printf("REPORT:\n");
+        System.out.printf("------------------\n");
+        System.out.printf("\n>BUS STATISTICS:\n");
         double[] RHO = new double[3];
         int index = 0;
-        for (double i : RHO)
+        for (int i = 0; i < RHO.length; i++)
         {
-            i = totalBusy[index++] / Clock;
+            RHO[i] = busUtilization[i++] / Clock;
         }
-        double AverageWaittime = SumWaitTime / passengerCount;
-        System.out.printf("\n  Bus Utilization                         %f\n", RHO);
-        System.out.println("\n  Average Wait Time In Queue                 " + AverageWaittime);
+        System.out.printf("\n>>Utilization\n");
+        index = 0;
+        for (double i : busUtilization)
+        {
+            System.out.printf("\tWest Campus %d:\t\t%f\n", 1 + index++, i);
+        }
+
+        // *******************
+        System.out.printf("\n>STOP STATISTICS\n");
         double AverageQueueLength[] = new double[11];
+        for (int i = 0; i < AverageQueueLength.length; i++)
+        {
+            AverageQueueLength[i] = wightedQueueLength[i] / Clock;
+        }
+        System.out.printf("\n>>Average Number Of People In Queue:\n");
         index = 0;
         for (double i : AverageQueueLength)
         {
-            i = wightedQueueLength[index] / Clock;
-
+            System.out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
         }
-        System.out.println("\n  Average Number Of Customers In Queue       " + AverageQueueLength);
-        System.out.printf("\nAverage Maximum Length of Queues:\n");
-        index= 0;
-        for(double i : maxQueueLength)
+
+        System.out.printf("\n>>Average Maximum Length of Queues:\n");
+        index = 0;
+        for (double i : maxQueueLength)
         {
-            System.out.printf("\t%s\t%f\n",stops[index++].getName(),i);
+            System.out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
         }
     }
 }

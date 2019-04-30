@@ -5,7 +5,7 @@ import java.util.Comparator;
  * @author Atif Hassan
  *
  */
-public class Person implements Comparator<Person>
+public class Person implements Comparator<Person>, Comparable<Person>
 {
     private final int startLoc;
     private final Location endLoc;
@@ -39,7 +39,7 @@ public class Person implements Comparator<Person>
     {
         return endLoc;
     }
-    
+
     /**
      * 
      * @return
@@ -82,13 +82,13 @@ public class Person implements Comparator<Person>
      */
     public double getWaitTime()
     {
-        return endWait-startWait;
+        return endWait - startWait;
     }
-
 
     @Override
     /**
      * compares based on priority of ending location
+     * 
      * @param p1
      * @param p2
      * @return -1 if p1<p2, 0 is p1=p2, +1 p1>p2
@@ -96,6 +96,17 @@ public class Person implements Comparator<Person>
     public int compare(Person p1, Person p2)
     {
         return p1.getEndLoc().compareTo(p2.getEndLoc());
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    @Override
+    public int compareTo(Person p0)
+    {
+        return this.getEndLoc().compareTo(p0.getEndLoc());
     }
 
 }

@@ -64,7 +64,7 @@ public class Location implements Comparable<Location>
     {
         this.priority = priotity;
     }
-    
+
     /**
      * 
      * @return
@@ -89,11 +89,11 @@ public class Location implements Comparable<Location>
      */
     public int compareTo(Location L)
     {
-        if ((L).getPriotity() > priority)
+        if((L).getPriotity() > priority)
         {
             return 1;
         }
-        if ((L).getPriotity() < priority)
+        if((L).getPriotity() < priority)
         {
             return -1;
         }
