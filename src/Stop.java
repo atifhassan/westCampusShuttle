@@ -1,3 +1,5 @@
+import java.util.Vector;
+
 /**
  * @author Atif Hassan
  *
@@ -5,11 +7,7 @@
 public class Stop
 {
     private String name;
-    private int capacity = 50;
-    private Person[] line = new Person[capacity];
-    private int head = 0;
-    private int tail = 0;
-    private int size = 0;
+    private Vector<Person> line = new Vector<>();
     private int totalArrivals = 0;
 
     /**
@@ -27,7 +25,7 @@ public class Stop
      */
     public boolean isEmpty()
     {
-        return size == 0;
+        return line.isEmpty();
     }
 
     /**
@@ -36,7 +34,7 @@ public class Stop
      */
     public int getSize()
     {
-        return size;
+        return line.size();
     }
 
     /**
@@ -47,62 +45,51 @@ public class Stop
      */
     public void enqueue(Person p, Event e) throws Exception
     {
-        if(size == capacity)
-        {
-            throw new Exception(
-                    this.name + " is Full! " + (int) (e.get_time() / 60) % 24 + ":" + (int) e.get_time() % 60);
-        }
         p.setStartWait(e.get_time());
-        line[tail] = p;
-        if(tail == capacity - 1) tail = 0;
-        else tail++;
-        size++;
-
+        line.addElement(p);
+        totalArrivals++;
     }
 
     /**
-     * 
-     * @return
+     * @return the value of the first element with out removing
      */
     public Person peek()
     {
-        return line[head];
+        return line.firstElement();
     }
 
     /**
      * 
-     * @param e
-     * @return
-     * @throws Exception
+     * @param e the triggering bus arrival event
+     * @return the person at the head of the line
+     * @throws Exception if line is empty
      */
     public Person dequeue(Event e) throws Exception
     {
-        if(this.isEmpty())
+        if(line.isEmpty())
         {
             throw new Exception("Line is Empty");
         }
-        Person temp = line[head];
+        Person temp = line.remove(0);
         temp.setEndWait(e.get_time());
-        if(head == capacity - 1)
-        {
-            head = 0;
-        }
-        else
-        {
-            head++;
-        }
-        size--;
         totalArrivals++;
         return temp;
     }
 
     /**
-     * 
      * @return
      */
     public String getName()
     {
         return name;
+    }
+    
+    /**
+     * @return
+     */
+    public int getTotalArrivals()
+    {
+        return totalArrivals;
     }
 
     /**
@@ -110,12 +97,7 @@ public class Stop
      */
     public String toString()
     {
-        return name + ": " + size;
-    }
-
-    public int getTotalArrivals()
-    {
-        return totalArrivals;
+        return name + ": " + line.size();
     }
 
 }

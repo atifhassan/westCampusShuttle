@@ -109,4 +109,12 @@ public class Person implements Comparator<Person>, Comparable<Person>
         return this.getEndLoc().compareTo(p0.getEndLoc());
     }
 
+    @Override
+    public String toString()
+    {
+        return "Person [startLoc=" + startLoc + ", endLoc=" + endLoc + ", startWait=" + startWait + ", endWait="
+                + endWait + "]";
+    }
+    
+    
 }

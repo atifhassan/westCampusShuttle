@@ -28,21 +28,29 @@ public class Simulator
     public final static int busArrive3 = 3;
 
     /**
-     *
+     * the total number of riders in the system
      */
+    public int[] riderCounter;
+    /**
+     * the total number of times the pickup event is called
+     */
+    public int[] pickupCounter;
     /**
      *
      */
+    public double[] accumulatedQueueLength;
     /**
-     *
+     * 
      */
+    public double[] accumulatedWaitTime;
     /**
-     *
+     * 
      */
+    public double[] maxWaitTime;
     /**
-     *
+     * 
      */
-    public double[] accumulatedQueueLength, totalBusy, waitTime, maxWaitTime, accumulatedBusUtilization;
+    public double[] accumulatedBusUtilization;
     /**
      * the end of day for each bus
      */
@@ -50,22 +58,23 @@ public class Simulator
     /**
      *
      */
+    public double Clock;
     /**
-     *
+     * 
      */
+    public double MeanInterArrivalTime;
     /**
-     *
+     * 
      */
+    public double LastEventTime;
     /**
-     *
+     * 
      */
+    public double SumResponseTime;
     /**
-     *
+     * 
      */
-    /**
-     *
-     */
-    public double Clock, MeanInterArrivalTime, LastEventTime, SumResponseTime, SumWaitTime;
+    public double SumWaitTime;
     /**
      *
      */
@@ -73,31 +82,34 @@ public class Simulator
     /**
      *
      */
+    public long passengerCount;
     /**
-     *
+     * 
      */
+    public long Queuelength;
     /**
-     *
+     * 
      */
+    public long passangerTotal;
     /**
-     *
+     * 
      */
+    public long NumberInService;
     /**
-     *
+     * 
      */
-    public long passengerCount, Queuelength, passangerTotal, NumberInService, NumberOfDepartures;
+    public long NumberOfDepartures;
 
     /**
      * List of events that will happen in the future
-     *
-     **/
+     */
     public EventList FutureEventList;
     /**
      *
      */
     public Rand stream;
     /**
-     *
+     * the array of bus stop queues
      */
     private Stop[] stops;
     /**
@@ -117,7 +129,7 @@ public class Simulator
     {
         FutureEventList = new EventList();
         stream = new Rand();
-        Clock = 360.0;
+        Clock = 360.0;// 6am Monday
         MeanInterArrivalTime = MIAT;
         this.initialize();
     }
@@ -127,16 +139,13 @@ public class Simulator
      */
     private void initialize()
     {
-        NumberInService = 0;
-        Queuelength = 0;
         LastEventTime = 0.0;
-        totalBusy = new double[] { 0.0, 0.0, 0.0 };
         accumulatedBusUtilization = new double[] { 0.0, 0.0, 0.0 };
+        pickupCounter = new int[] { 0, 0, 0 };
         maxQueueLength = new long[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        NumberOfDepartures = 0;
-        SumWaitTime = 0.0;
+        riderCounter = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         accumulatedQueueLength = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
-        waitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        accumulatedWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         maxWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
@@ -159,6 +168,8 @@ public class Simulator
         {
             route.get(i).setNext(route.get((i + 1) % 11));
         }
+
+        // creates the buses and starts them at west campus
         fleet = new Bus[] { new Bus('1', route.get(0)), new Bus('2', route.get(0)), new Bus('3', route.get(0)) };
 
         // schedule first arrival
@@ -203,7 +214,7 @@ public class Simulator
                 FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
 
                 // accounts for break for west campus 3
-                if(!((tClock % 1440) >= 645 && (tClock % 1440) <= 900))
+                if(!((tClock % 1440) >= 645 && (tClock % 1440) < 900))
                 {
                     // schedule loop for west campus 3
                     double tClock3 = tClock + 10.0;
@@ -247,18 +258,15 @@ public class Simulator
         {
             maxQueueLength[index] = stops[index].getSize();
         }
+
+        // Create next arrival
         double time = uniform(stream, 5, 10);
         Event next_arrival = null;
-        if((Clock % 1440 < 360))
+        if(Clock%1440>=15&&Clock%1440<360)
         {
-            next_arrival = new Event(arrival, Clock - (Clock % 1440) + 360 + time,
-                    new Person(genStartLoc(time), genEndLoc(0)));
-
+            Clock= (Clock-Clock%1440)+360;
         }
-        else
-        {
-            next_arrival = new Event(arrival, Clock + time, new Person(genStartLoc(time), genEndLoc(0)));
-        }
+        next_arrival = new Event(arrival, Clock + time, new Person(genStartLoc(time), genEndLoc(0)));
         FutureEventList.enqueue(next_arrival);
         LastEventTime = evt.get_time();
     }
@@ -279,7 +287,7 @@ public class Simulator
                 temp = fleet[b];
                 accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
-                if(Clock % 1440 == busBreakTime[b])
+                if(Clock % 1440 >= busBreakTime[b] && temp.getLoc().equals(route.get(0)))
                 {
                     // checks if bus is empty
                     if(temp.getSize() != 0)
@@ -288,6 +296,7 @@ public class Simulator
                     }
                     return;
                 }
+                pickupCounter[b]++;
                 this.busPickup(e, temp);
                 break;
             case 2:
@@ -295,7 +304,7 @@ public class Simulator
                 temp = fleet[b];
                 accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
-                if(Clock % 1440 == busBreakTime[b])
+                if(Clock % 1440 >= busBreakTime[b] && temp.getLoc().equals(route.get(0)))
                 {
                     if(temp.getSize() != 0)
                     {
@@ -303,6 +312,7 @@ public class Simulator
                     }
                     return;
                 }
+                pickupCounter[b]++;
                 this.busPickup(e, temp);
                 break;
             case 3:
@@ -310,7 +320,8 @@ public class Simulator
                 temp = fleet[b];
                 accumulatedBusUtilization[b] += timeDif * temp.getSize();
                 temp.arrive();
-                if(Clock % 1440 == busBreakTime[b] || (Clock % 1440) == 645)
+                if((Clock % 1440 >= busBreakTime[b] || ((Clock % 1440) >= 645 && (Clock % 1440) < 900))
+                        && temp.getLoc().equals(route.get(0)))
                 {
                     if(temp.getSize() != 0)
                     {
@@ -318,6 +329,7 @@ public class Simulator
                     }
                     return;
                 }
+                pickupCounter[b]++;
                 this.busPickup(e, temp);
                 break;
             default:
@@ -329,18 +341,20 @@ public class Simulator
     /**
      * @param e   the event to be processed
      * @param bus the bus being used
+     * @param b   the index of bus
      * @throws Exception the wrong type of event is passed
      */
     private void busPickup(Event e, Bus bus) throws Exception
     {
         // Call bus pickup
-        int index = 0;
-        // uses temp stop variable to call pickup
-        double[] d = bus.pickup(stops[route.indexOf(bus.getLoc())], e, maxWaitTime[index]);
+        int index = route.indexOf(bus.getLoc());
+        // uses temporary stop variable to call pickup
+        double[] d = bus.pickup(stops[index], e, maxWaitTime[index]);
 
-        waitTime[index] += d[0];
-        maxWaitTime[index] = d[1];
         // update stops max/average wait time statistic - might have to be done with pickup
+        accumulatedWaitTime[index] += d[0];
+        maxWaitTime[index] = d[1];
+        riderCounter[index] += d[2];
 
         // Move bus to next stop
         bus.step();
@@ -415,9 +429,9 @@ public class Simulator
 
     /**
      *
-     * @param rng random number stream
+     * @param rng  random number stream
      * @param mean
-     * @param std standard deviation
+     * @param std  standard deviation
      * @return
      */
     public static double normal(Rand rng, double mean, double std)
@@ -434,23 +448,33 @@ public class Simulator
         try
         {
             PrintWriter out = new PrintWriter("output.txt");
+            int index = 0;
             out.printf("REPORT:\n");
             out.printf("------------------\n");
+            out.printf("Run Time: " + Clock);
             out.printf("\n>BUS STATISTICS:\n");
-            double[] RHO = new double[3];
-            int index = 0;
-            for (int i = 0; i < RHO.length; i++)
+            ////
+            for (double i : accumulatedBusUtilization)
             {
-                RHO[i] = accumulatedBusUtilization[i++] / Clock;
+                out.printf("\tWest Campus %c:\t\t%f\n", fleet[index].getID(), i);
+                index++;
+            }
+            ////
+            double[] averageUtil = new double[3];
+            for (int i = 0; i < averageUtil.length; i++)
+            {
+                averageUtil[i] = accumulatedBusUtilization[i] / Clock;
             }
             out.printf("\n>>Utilization\n");
             index = 0;
-            for (double i : RHO)
+            for (double i : averageUtil)
             {
-                out.printf("\tWest Campus %d:\t\t%f\n", 1 + index++, i);
+                out.printf("\tWest Campus %d:\t\t%f\n", 1 + index, i);
+                index++;
             }
 
             out.printf("\n>STOP STATISTICS\n");
+            ////
             double AverageQueueLength[] = new double[11];
             for (int i = 0; i < AverageQueueLength.length; i++)
             {
@@ -460,15 +484,38 @@ public class Simulator
             index = 0;
             for (double i : AverageQueueLength)
             {
-                out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
+                out.printf("\t%-20s\t\t%.2f people\n", stops[index].getName(), i);
+                index++;
             }
 
-            out.printf("\n>>Average Maximum Length of Queues:\n");
+            ////
+            out.printf("\n>>Maximum Length of Queues:\n");
             index = 0;
             for (double i : maxQueueLength)
             {
-                out.printf("\t%-20s\t\t%.2f\n", stops[index++].getName(), i);
+                out.printf("\t%-20s\t\t%.2f people\n", stops[index].getName(), i);
+                index++;
             }
+
+            ////
+            out.printf("\n>>Average Wait Time People In Queue:\n");
+            index = 0;
+            for (double i : accumulatedWaitTime)
+            {
+                out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i / riderCounter[index]);
+                index++;
+            }
+
+            ////
+            out.printf("\n>>Max Wait Time People In Queue:\n");
+            index = 0;
+            for (double i : maxWaitTime)
+            {
+                out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i);
+                index++;
+            }
+
+            /////
             out.close();
         } catch (FileNotFoundException e)
         {

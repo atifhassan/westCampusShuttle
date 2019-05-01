@@ -17,15 +17,11 @@ public class Bus
     /**
      * 
      */
-    private int size;
-    /**
-     * 
-     */
     private final char id;
     /**
      * 
      */
-    private PriorityQueue<Person> seats = new PriorityQueue<>(capacity);
+    public PriorityQueue<Person> seats = new PriorityQueue<>(capacity);
 
     /**
      * @param id
@@ -52,10 +48,11 @@ public class Bus
     {
         if(!seats.isEmpty())
         {
-            while (seats.peek().getEndLoc().equals(loc))
+            while (!seats.isEmpty() && seats.peek().getEndLoc().equals(loc))
             {
                 seats.remove();
             }
+
         }
     }
 
@@ -69,6 +66,7 @@ public class Bus
     {
         Person temp;
         double newMaxWait = maxWait;
+        int counter = 0;
         int waitTime = 0;
         while (!this.isFull() && !s.isEmpty())
         {
@@ -76,7 +74,7 @@ public class Bus
             {
                 temp = s.dequeue(e);
                 seats.add(temp);
-                size++;
+                counter++;
                 waitTime += temp.getWaitTime();
                 if(newMaxWait < temp.getWaitTime())
                 {
@@ -87,7 +85,7 @@ public class Bus
                 ex.printStackTrace();
             }
         }
-        return new double[] { waitTime, newMaxWait };
+        return new double[] { waitTime, newMaxWait, counter };
     }
 
     /**
@@ -99,21 +97,13 @@ public class Bus
     }
 
     /**
-     *
      * @param currentLoc
-     */
-    /**
-     * @param loc
      */
     public void setLoc(Location loc)
     {
         this.loc = loc;
     }
 
-    /**
-     *
-     * @return
-     */
     /**
      * @return
      */
@@ -123,35 +113,28 @@ public class Bus
     }
 
     /**
-     *
-     * @return
-     */
-    /**
      * @return
      */
     public Boolean isFull()
     {
-        return size == capacity;
+        return seats.size() == capacity;
     }
 
-    /**
-     *
-     */
+
     /**
      * @return
      */
     public int getSize()
     {
-        return size;
+        return seats.size();
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Object#toString()
-     */
+    @Override
     public String toString()
     {
-        return id + ": " + size;
+        return "Bus [loc=" + loc + ", capacity=" + capacity + ", id=" + id + ", seats=" + seats
+                + ", getSize()=" + getSize() + "]";
     }
+    
+    
 }

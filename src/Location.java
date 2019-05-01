@@ -108,4 +108,11 @@ public class Location implements Comparable<Location>
     {
         return ((Location) o).getName().equals(name);
     }
+
+    @Override
+    public String toString()
+    {
+        return "Location [name=" + name + ", priority=" + priority + ", next=" + next + "]";
+    }
+    
 }
