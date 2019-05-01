@@ -197,7 +197,7 @@ public class Simulator
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 16.902));
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 19.015));
                 FutureEventList.enqueue(new Event(busArrive1, tClock1 + 22.818));
-
+/*
                 // Schedule loop for west campus 2
                 double tClock2 = tClock + 15.0;
 
@@ -231,6 +231,7 @@ public class Simulator
                     FutureEventList.enqueue(new Event(busArrive3, tClock3 + 30));
                 }
             }
+            */
             tClock += 30;
         }
     }
