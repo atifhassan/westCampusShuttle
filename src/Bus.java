@@ -9,7 +9,7 @@ public class Bus
     /**
      * current location of the bus
      */
-    private Location loc;
+    //private Location loc;
     /**
      * 
      */
@@ -25,13 +25,22 @@ public class Bus
 
     /**
      * @param id
-     * @param start
      */
-    public Bus(char id, Location start)
+    public Bus(char id)
     {
+        super();
         this.id = id;
-        loc = start;
     }
+
+//    /**
+//     * @param id
+//     * @param start
+//     */
+//    public Bus(char id, Location start)
+//    {
+//        this.id = id;
+//        loc = start;
+//    }
 
     /**
      * @return
@@ -44,16 +53,14 @@ public class Bus
     /**
      * drops off passengers
      */
-    public void arrive()
+    public void arrive(int location)
     {
-        if(!seats.isEmpty())
-        {
-            while (!seats.isEmpty() && seats.peek().getEndLoc().equals(loc))
+
+            while (!seats.isEmpty() && seats.peek().getEndLoc()==location)
             {
+                //System.out.println(seats.remove());
                 seats.remove();
             }
-
-        }
     }
 
     /**
@@ -78,8 +85,10 @@ public class Bus
                 waitTime += temp.getWaitTime();
                 if(newMaxWait < temp.getWaitTime())
                 {
+                    //System.out.println(temp);
                     newMaxWait = temp.getWaitTime();
                 }
+
             } catch (Exception ex)
             {
                 ex.printStackTrace();
@@ -88,29 +97,29 @@ public class Bus
         return new double[] { waitTime, newMaxWait, counter };
     }
 
-    /**
-     * 
-     */
-    public void step()
-    {
-        loc = loc.getNext();
-    }
-
-    /**
-     * @param currentLoc
-     */
-    public void setLoc(Location loc)
-    {
-        this.loc = loc;
-    }
-
-    /**
-     * @return
-     */
-    public Location getLoc()
-    {
-        return loc;
-    }
+//    /**
+//     * 
+//     */
+//    public void step()
+//    {
+//        loc = loc.getNext();
+//    }
+//
+//    /**
+//     * @param currentLoc
+//     */
+//    public void setLoc(Location loc)
+//    {
+//        this.loc = loc;
+//    }
+//
+//    /**
+//     * @return
+//     */
+//    public Location getLoc()
+//    {
+//        return loc;
+//    }
 
     /**
      * @return
@@ -132,7 +141,7 @@ public class Bus
     @Override
     public String toString()
     {
-        return "Bus [loc=" + loc + ", capacity=" + capacity + ", id=" + id + ", seats=" + seats
+        return "Bus [capacity=" + capacity + ", id=" + id + ", seats=" + seats.toArray()
                 + ", getSize()=" + getSize() + "]";
     }
     

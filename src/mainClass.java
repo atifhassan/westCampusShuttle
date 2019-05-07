@@ -11,29 +11,30 @@ public class mainClass
      */
     public static void main(String argv[])
     {
-        Simulator sim = new Simulator(7.7);
+        Simulator sim = new Simulator(3,1);
         // Loop until clock is greater than 7200 minutes, 24hr Mon-Fri
-        while (sim.Clock < 7200)
+        while (sim.getClock() < 2880)
         {
             Event evt = sim.FutureEventList.getMin(); // get imminent event
             sim.FutureEventList.dequeue(); // delete the event
-            sim.Clock = evt.get_time(); // advance in time
+            sim.setClock(evt.get_time()); // advance in time
             if(evt.get_type() == Simulator.arrival)
             {
-                sim.processArrival(evt);
+                sim.processArrivalEvent(evt);
             }
             else
             {
                 try
                 {
-                    sim.processBus(evt);
+                    sim.processBusEvent(evt);
                 } catch (Exception ex)
                 {
                     ex.printStackTrace();
                 }
             }
         }
-        sim.ReportGeneration();
+        sim.generateReport();
+        System.out.println("Done!");
     }
 
 }

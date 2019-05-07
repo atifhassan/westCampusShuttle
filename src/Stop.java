@@ -6,18 +6,29 @@ import java.util.Vector;
  */
 public class Stop
 {
-    private String name;
+    private final String name;
+    //private final Location location;
     private Vector<Person> line = new Vector<>();
     private int totalArrivals = 0;
 
+//    /**
+//     * 
+//     * @param name
+//     */
+//    public Stop(String name)
+//    {
+//        this.name = name;
+//    }
+
+    
     /**
-     * 
      * @param name
      */
     public Stop(String name)
     {
         this.name = name;
     }
+
 
     /**
      * 
@@ -91,6 +102,15 @@ public class Stop
     {
         return totalArrivals;
     }
+
+//    /**
+//     * 
+//     * @return
+//     */
+//    public Location getLocation()
+//    {
+//        return location;
+//    }
 
     /**
      * 

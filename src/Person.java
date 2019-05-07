@@ -8,7 +8,7 @@ import java.util.Comparator;
 public class Person implements Comparator<Person>, Comparable<Person>
 {
     private final int startLoc;
-    private final Location endLoc;
+    private final int endLoc;
     private double startWait;
     private double endWait;
 
@@ -17,7 +17,7 @@ public class Person implements Comparator<Person>, Comparable<Person>
      * @param start
      * @param end
      */
-    public Person(int start, Location end)
+    public Person(int start, int end)
     {
         startLoc = start;
         endLoc = end;
@@ -35,7 +35,7 @@ public class Person implements Comparator<Person>, Comparable<Person>
     /**
      * 
      */
-    public Location getEndLoc()
+    public int getEndLoc()
     {
         return endLoc;
     }
@@ -95,7 +95,12 @@ public class Person implements Comparator<Person>, Comparable<Person>
      */
     public int compare(Person p1, Person p2)
     {
-        return p1.getEndLoc().compareTo(p2.getEndLoc());
+        int ret = 0;
+        if (p1.getEndLoc()>p2.getEndLoc())
+            ret = 1;
+        else if(p1.getEndLoc()<p2.getEndLoc())
+            ret = -1;
+        return ret;
     }
 
     /*
@@ -106,15 +111,22 @@ public class Person implements Comparator<Person>, Comparable<Person>
     @Override
     public int compareTo(Person p0)
     {
-        return this.getEndLoc().compareTo(p0.getEndLoc());
-    }
+        int ret = 0;
+        if (endLoc>p0.getEndLoc())
+            ret = 1;
+        else if(endLoc<p0.getEndLoc())
+            ret = -1;
+        return ret;
+        }
 
     @Override
     public String toString()
     {
-        return "Person [startLoc=" + startLoc + ", endLoc=" + endLoc + ", startWait=" + startWait + ", endWait="
-                + endWait + "]";
+        return "Person [startLoc=" + startLoc + ", endLoc=" + endLoc + "\n startWait=" + startWait + ", endWait="
+                + endWait + ", getWaitTime()=" + getWaitTime() + "]\n";
     }
+    
+    
     
     
 }
