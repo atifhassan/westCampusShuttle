@@ -36,6 +36,7 @@ public class Simulator
     private double[] maxWaitTime;
     private double[] accumulatedBusUtilization;
     private double[] maxOccupancy;
+    private double[] busClock;
     private final double[] busBreakTime = { 1410, 1425, 1420 };
     private double Clock;
     private double LastEventTime;
@@ -59,22 +60,6 @@ public class Simulator
         meanArrivalTime = mean;
         maxArrivalTime = max;
         this.initialize();
-    }
-
-    /**
-     * @return
-     */
-    public double getClock()
-    {
-        return Clock;
-    }
-
-    /**
-     * @param clock
-     */
-    public void setClock(double clock)
-    {
-        Clock = clock;
     }
 
     /**
@@ -106,6 +91,7 @@ public class Simulator
 
         // schedule all buses
         double tClock = 420;// temporary clock 7am Monday
+        busClock = new double[]{tClock,tClock+15,tClock+10};
         while (tClock < 7200)
         {
             // Schedule loop for west campus 1
@@ -159,6 +145,22 @@ public class Simulator
             tClock += 30;
         }
     }
+    
+    /**
+     * @return current system time in minutes
+     */
+    public double getClock()
+    {
+        return Clock;
+    }
+
+    /**
+     * @param clock system time in minutes
+     */
+    public void setClock(double clock)
+    {
+        Clock = clock;
+    }
 
     /**
      * @param evt the event that needs is to be processed
@@ -204,38 +206,20 @@ public class Simulator
     public void processBusEvent(Event e) throws Exception
     {
 
-        int b = -1;
-        switch (e.get_type())
-        {
-            case 1:
-                b = 0;
-                busDropoff(b);
-                busPickup(b);
-                break;
-            case 2:
-                b = 1;
-                busDropoff(b);
-                busPickup(b);
-                break;
-            case 3:
-                b = 2;
-                busDropoff(b);
-                busPickup(b);
-                break;
-            default:
-                throw new Exception("wrong type of event");
-        }
-        LastEventTime = e.get_time();
+        int b = e.get_type()-1;
+        if(busDropoff(b));
+        busPickup(b);
+        busClock[b] += e.get_time()-busClock[b];
     }
 
     /**
      * @param b
      * @throws Exception
      */
-    private void busDropoff(int b) throws Exception
+    private boolean busDropoff(int b) throws Exception
     {
         Bus bus = fleet[b];
-        double timeDif = Clock - LastEventTime;
+        double timeDif = Clock - busClock[b];
         if(bus.getSize() > maxOccupancy[b])
         {
             maxOccupancy[b] = bus.getSize();
@@ -249,7 +233,9 @@ public class Simulator
                 throw new Exception("Bus " + bus.getID() + " is not empty when on break!\n There are " + bus.getSize()
                         + " people still on the bus.");
             }
+            return false;
         }
+        return true;
     }
 
     /**
@@ -364,40 +350,30 @@ public class Simulator
     {
         try
         {
-            PrintWriter out = new PrintWriter("output.txt");
+            PrintWriter out = new PrintWriter("Report.txt");
             int index = 0;
-            out.printf("REPORT:\n");
-            out.printf("------------------\n");
+            out.printf("SIMULATION REPORT:\n");
+            out.printf("-----------------------------------------------------\n");
             out.printf("Run Time: " + Clock);
-            out.printf("\n>BUS STATISTICS:\n");
+            out.printf("\n>>>>BUS STATISTICS:\n");
             ////
-            for (double i : accumulatedBusUtilization)
-            {
-                out.printf("\tWest Campus %c:\t\t%f\n", fleet[index].getID(), i);
-                index++;
-            }
-            ////
+            index = 0;
             double[] averageUtil = new double[3];
             for (int i = 0; i < averageUtil.length; i++)
             {
-                averageUtil[i] = accumulatedBusUtilization[i] / Clock;
+                averageUtil[i] = accumulatedBusUtilization[i] / busClock[index];
             }
             out.printf("\n>>Utilization\n");
             index = 0;
             for (double i : averageUtil)
             {
-                out.printf("\tWest Campus %d:\t\t%f people/minute\n", 1 + index, i);
+                out.printf("\tWest Campus %d:\t\t%.2f people/minute\n", 1 + index, i);
                 index++;
             }
+            
             ////
-            index = 0;
-            for (double i : maxOccupancy)
-            {
-                out.printf("\tWest Campus %c:\t\t%f\n", fleet[index].getID(), i);
-                index++;
-            }
-            out.printf("\n>STOP STATISTICS\n");
-            ////
+            out.printf("\n>>>>STOP STATISTICS\n");
+            //
             double AverageQueueLength[] = new double[11];
             for (int i = 0; i < AverageQueueLength.length; i++)
             {
@@ -411,7 +387,7 @@ public class Simulator
                 index++;
             }
 
-            ////
+            //
             out.printf("\n>>Maximum Length of Queues:\n");
             index = 0;
             for (double i : maxQueueLength)
@@ -419,7 +395,18 @@ public class Simulator
                 out.printf("\t%-20s\t\t%.2f people\n", stops[index].getName(), i);
                 index++;
             }
-
+            //
+            out.printf("\n>>Total People at Queue:\n");
+            index = 0;
+            int sum = 0;
+            for (int i : riderCounter)
+            {
+                out.printf("\t%-20s\t\t%d people\n", stops[index].getName(), i);
+                index++;
+                sum += i;
+            }
+            out.printf("\n>>%-20s\t\t%d people\n","Total People Served:", sum);
+            
             ////
             out.printf("\n>>Average Wait Time People In Queue:\n");
             index = 0;
@@ -429,16 +416,6 @@ public class Simulator
                 index++;
             }
             //
-            index = 0;
-            int sum = 0;
-            for (int i : riderCounter)
-            {
-                out.printf("\t%-20s\t\t%d people\n", stops[index].getName(), i);
-                index++;
-                sum += i;
-            }
-            out.printf("\t%d people\n", sum);
-            ////
             out.printf("\n>>Max Wait Time People In Queue:\n");
             index = 0;
             for (double i : maxWaitTime)
