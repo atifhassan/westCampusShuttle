@@ -1,3 +1,4 @@
+import java.util.Comparator;
 import java.util.PriorityQueue;
 
 /**
@@ -7,11 +8,7 @@ import java.util.PriorityQueue;
 public class Bus
 {
     /**
-     * current location of the bus
-     */
-    //private Location loc;
-    /**
-     * 
+     * the capacity of the Bus from data
      */
     private final int capacity = 24;
     /**
@@ -21,26 +18,24 @@ public class Bus
     /**
      * 
      */
-    public PriorityQueue<Person> seats = new PriorityQueue<>(capacity);
+    public PriorityQueue<Person> seats;
 
     /**
      * @param id
      */
     public Bus(char id)
     {
-        super();
+        seats = new PriorityQueue<>(capacity, new Comparator<Person>()
+        {
+            public int compare(Person p1, Person p2)
+            {
+                if(p1.getEndLoc() < p2.getEndLoc()) return -1;
+                if(p1.getEndLoc() > p2.getEndLoc()) return 1;
+                return 0;
+            }
+        });
         this.id = id;
     }
-
-//    /**
-//     * @param id
-//     * @param start
-//     */
-//    public Bus(char id, Location start)
-//    {
-//        this.id = id;
-//        loc = start;
-//    }
 
     /**
      * @return
@@ -56,11 +51,11 @@ public class Bus
     public void arrive(int location)
     {
 
-            while (!seats.isEmpty() && seats.peek().getEndLoc()==location)
-            {
-                //System.out.println(seats.remove());
-                seats.remove();
-            }
+        while (!seats.isEmpty() && seats.peek().getEndLoc() == location)
+        {
+            // System.out.println(seats.remove());
+            seats.remove();
+        }
     }
 
     /**
@@ -68,8 +63,9 @@ public class Bus
      * @param e       the triggering event
      * @param maxWait
      * @return
+     * @throws Exception
      */
-    public double[] pickup(Stop s, Event e, double maxWait)
+    public double[] pickup(Stop s, Event e, double maxWait) throws Exception
     {
         Person temp;
         double newMaxWait = maxWait;
@@ -80,12 +76,13 @@ public class Bus
             try
             {
                 temp = s.dequeue(e);
+                temp.getStartLoc();
+
                 seats.add(temp);
                 counter++;
                 waitTime += temp.getWaitTime();
                 if(newMaxWait < temp.getWaitTime())
                 {
-                    //System.out.println(temp);
                     newMaxWait = temp.getWaitTime();
                 }
 
@@ -94,32 +91,12 @@ public class Bus
                 ex.printStackTrace();
             }
         }
+        if(this.isFull())
+        {
+            throw new Exception("Bus is Full");
+        }
         return new double[] { waitTime, newMaxWait, counter };
     }
-
-//    /**
-//     * 
-//     */
-//    public void step()
-//    {
-//        loc = loc.getNext();
-//    }
-//
-//    /**
-//     * @param currentLoc
-//     */
-//    public void setLoc(Location loc)
-//    {
-//        this.loc = loc;
-//    }
-//
-//    /**
-//     * @return
-//     */
-//    public Location getLoc()
-//    {
-//        return loc;
-//    }
 
     /**
      * @return
@@ -128,7 +105,6 @@ public class Bus
     {
         return seats.size() == capacity;
     }
-
 
     /**
      * @return
@@ -141,9 +117,13 @@ public class Bus
     @Override
     public String toString()
     {
-        return "Bus [capacity=" + capacity + ", id=" + id + ", seats=" + seats.toArray()
-                + ", getSize()=" + getSize() + "]";
+        String ret = "Bus [capacity=" + capacity + ", id=" + id + ", seats= \n";
+        for (Person i : seats)
+        {
+            ret += i.toString() + "\n";
+        }
+        ret += ", getSize()=" + getSize() + "]";
+        return ret;
     }
-    
-    
+
 }

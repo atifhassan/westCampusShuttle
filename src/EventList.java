@@ -2,9 +2,7 @@ import java.util.PriorityQueue;
 import java.util.Comparator;
 
 /**
- * 
  * @author Atif Hassan
- *
  */
 public class EventList
 {

@@ -1,8 +1,5 @@
 /**
- * copied from single server queue
- * 
- * @author atifm
- *
+ * copied from blackboard
  */
 public class Event
 {
@@ -16,10 +13,6 @@ public class Event
      */
     private int type;
 
-    /**
-     * person associated with event
-     */
-    private Person person;
 
     /**
      * 
@@ -30,20 +23,6 @@ public class Event
     {
         type = _type;
         time = _time;
-    }
-
-    /**
-     * 
-     * @param _type
-     * @param _time
-     * @param _person
-     */
-    public Event(int _type, double _time, Person _person)
-    {
-        type = _type;
-        time = _time;
-        person = _person;
-
     }
 
     /**
@@ -62,15 +41,6 @@ public class Event
     public int get_type()
     {
         return type;
-    }
-
-    /**
-     * 
-     * @return associated person
-     */
-    public Person getPerson()
-    {
-        return person;
     }
 
 }

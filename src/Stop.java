@@ -7,12 +7,10 @@ import java.util.Vector;
 public class Stop
 {
     private final String name;
-    //private final Location location;
     private Vector<Person> line = new Vector<>();
-    private int totalArrivals = 0;
 
 //    /**
-//     * 
+//     *
 //     * @param name
 //     */
 //    public Stop(String name)
@@ -20,7 +18,6 @@ public class Stop
 //        this.name = name;
 //    }
 
-    
     /**
      * @param name
      */
@@ -29,9 +26,8 @@ public class Stop
         this.name = name;
     }
 
-
     /**
-     * 
+     *
      * @return
      */
     public boolean isEmpty()
@@ -40,7 +36,7 @@ public class Stop
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getSize()
@@ -49,16 +45,14 @@ public class Stop
     }
 
     /**
-     * 
+     *
      * @param p
      * @param e
-     * @throws Exception
      */
-    public void enqueue(Person p, Event e) throws Exception
+    public void enqueue(Person p, Event e)
     {
         p.setStartWait(e.get_time());
         line.addElement(p);
-        totalArrivals++;
     }
 
     /**
@@ -70,7 +64,7 @@ public class Stop
     }
 
     /**
-     * 
+     *
      * @param e the triggering bus arrival event
      * @return the person at the head of the line
      * @throws Exception if line is empty
@@ -81,9 +75,10 @@ public class Stop
         {
             throw new Exception("Line is Empty");
         }
-        Person temp = line.remove(0);
+
+        Person temp = line.elementAt(0);
+        line.removeElementAt(0);
         temp.setEndWait(e.get_time());
-        totalArrivals++;
         return temp;
     }
 
@@ -94,26 +89,9 @@ public class Stop
     {
         return name;
     }
-    
-    /**
-     * @return
-     */
-    public int getTotalArrivals()
-    {
-        return totalArrivals;
-    }
-
-//    /**
-//     * 
-//     * @return
-//     */
-//    public Location getLocation()
-//    {
-//        return location;
-//    }
 
     /**
-     * 
+     *
      */
     public String toString()
     {

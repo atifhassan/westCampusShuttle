@@ -1,11 +1,8 @@
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
-//import java.util.ArrayList;
 
 /**
- *
  * @author Atif Hassan
- *
  */
 public class Simulator
 {
@@ -47,11 +44,9 @@ public class Simulator
     private Rand stream;
     private Stop[] stops; // the array of bus stop queues
     private int busLocationPointer[]; // keeps track of the location of each bus
-    // private ArrayList<Location> route;
     private Bus[] fleet; // stores all bus objects
 
     /**
-     *
      * @param mean Mean Inter-arrival Time
      * @param std  standard deviation
      */
@@ -66,7 +61,6 @@ public class Simulator
     }
 
     /**
-     * 
      * @return
      */
     public double getClock()
@@ -75,7 +69,6 @@ public class Simulator
     }
 
     /**
-     * 
      * @param clock
      */
     public void setClock(double clock)
@@ -101,37 +94,17 @@ public class Simulator
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
         busLocationPointer = new int[] { 0, 0, 0 };
-//        route = new ArrayList<>(11);
-//        route.add(0, new Location("West Campus", 0));
-//        route.add(1, new Location("Rapidan River O", 10));
-//        route.add(2, new Location("Field House O", 9));
-//        route.add(3, new Location("RAC O", 8));
-//        route.add(4, new Location("Mason Pond O", 7));
-//        route.add(5, new Location("Presidents Park", 6));
-//        route.add(6, new Location("Masonvale", 5));
-//        route.add(7, new Location("Rappohannock", 4));
-//        route.add(8, new Location("RAC I", 3));
-//        route.add(9, new Location("Field House I", 2));
-//        route.add(10, new Location("Rapidan River I", 1));
-
-//        // sets the next location along the route
-//        for (int i = 0; i < route.size(); i++)
-//        {
-//            route.get(i).setNext(route.get((i + 1) % 11));
-//        }
 
         // creates the buses and starts them at west campus
-        // fleet = new Bus[] { new Bus('1', busLocation, new Bus('2', route.get(0)), new Bus('3', route.get(0)) };
         fleet = new Bus[] { new Bus('1'), new Bus('2'), new Bus('3') };
 
         // schedule first arrival
         double time = normal(stream, meanArrivalTime, stdArrivalTime);
-        int start = genStartLoc(time);
-        Event first_arrival = new Event(arrival, Clock + time, new Person(start, genEndLoc(start)));
+        Event first_arrival = new Event(arrival, Clock + time);
         FutureEventList.enqueue(first_arrival);
 
         // schedule all buses
-        double tClock = 0.0;// temp clock 7am Monday
+        double tClock = 0.0;// temporary clock 7am Monday
         while (tClock < 7200)
         {
             // Schedule loop for west campus 1
@@ -150,52 +123,54 @@ public class Simulator
             FutureEventList.enqueue(new Event(busArrive1, tClock1 + 22.818));
 
             // Schedule loop for west campus 2
-//            double tClock2 = tClock + 15.0;
-//
-//            // arrivals
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 1.268));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 7.183));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 10.986));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 12.254));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 14.367));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.057));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.902));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 19.015));
-//            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
-//
-//            // accounts for break for west campus 3
-//            if(!((tClock % 1440) >= 645 && (tClock % 1440) < 900))
-//            {
-//                // schedule loop for west campus 3
-//                double tClock3 = tClock + 10.0;
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 1.268));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 7.183));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 10.986));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 12.254));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 14.367));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.057));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.902));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 19.015));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 22.818));
-//                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 30));
-//            }
+            double tClock2 = tClock + 15.0;
+
+            // arrivals
+            FutureEventList.enqueue(new Event(busArrive2, tClock2));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 1.268));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 7.183));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 10.986));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 12.254));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 14.367));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.057));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 16.902));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 19.015));
+            FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
+
+            // accounts for break for west campus 3
+            if(!((tClock % 1440) >= 645 && (tClock % 1440) < 900))
+            {
+                // schedule loop for west campus 3
+                double tClock3 = tClock + 10.0;
+                FutureEventList.enqueue(new Event(busArrive3, tClock3));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 1.268));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 7.183));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 10.986));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 12.254));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 14.367));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.057));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 16.902));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 19.015));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 22.818));
+                FutureEventList.enqueue(new Event(busArrive3, tClock3 + 30));
+            }
 
             tClock += 30;
         }
     }
 
     /**
-     * @param evt
+     * @param evt the event that needs is to be processed
      */
     public void processArrivalEvent(Event evt)
     {
-        int index = evt.getPerson().getStartLoc();
+        int start = genStartLoc(evt.get_time());
+        Person passenger = new Person(start, genEndLoc(start));
+        int index = passenger.getStartLoc();
         // adds person to bus stop of the starting location
         try
         {
-            stops[index].enqueue(evt.getPerson(), evt);
+            stops[index].enqueue(passenger, evt);
         } catch (Exception e)
         {
             System.out.print(stops);
@@ -211,13 +186,12 @@ public class Simulator
         }
 
         // Create next arrival
-        if((Clock % 1440) < 360) //people can't arrive before 6am
+        if((Clock % 1440) < 360) // people can't arrive before 6am
         {
-            Clock = (Clock - (Clock % 1440)) + 360; //set clock to 6am
+            Clock = (Clock - (Clock % 1440)) + 360; // set clock to 6am
         }
         double time = normal(stream, meanArrivalTime, stdArrivalTime);
-        int start = genStartLoc(time);
-        Event next_arrival = new Event(arrival, Clock + time, new Person(start, genEndLoc(start)));
+        Event next_arrival = new Event(arrival, Clock + time);
         FutureEventList.enqueue(next_arrival);
         LastEventTime = evt.get_time();
     }
@@ -258,7 +232,6 @@ public class Simulator
     }
 
     /**
-     * 
      * @param b
      * @throws Exception
      */
@@ -272,7 +245,7 @@ public class Simulator
         }
         accumulatedBusUtilization[b] += timeDif * bus.getSize();
         bus.arrive(busLocationPointer[b]);
-        if(busLocationPointer[b] == 0 && (Clock) % 1440 > busBreakTime[b])
+        if(busLocationPointer[b] == 0 && (Clock % 1440) > busBreakTime[b])
         {
             if(bus.getSize() != 0)
             {
@@ -308,10 +281,6 @@ public class Simulator
         {
             busLocationPointer[pointer]++;
         }
-
-        // Move bus to next stop
-        // bus.step();
-        // May have to drop off remaining passengers here if going to be on break
     }
 
     /**
@@ -330,7 +299,11 @@ public class Simulator
          * = -0.15 * Math.log(time) + 0.8423; fhiP = -0.15 * Math.log(time) + 0.8423; rriP = -0.15 * Math.log(time) +
          * 0.8423;
          */
-        return (int) (Math.random() * 11);
+        int max = 10;
+        int min = 0;
+        int range = max - min + 1;
+        int index = ((int) (Math.random() * range) + min);
+        return index;
     }
 
     /**
@@ -339,11 +312,11 @@ public class Simulator
      */
     private int genEndLoc(int start)
     {
-        int max = 11;
+        int max = 10;
         int min = start + 1;
         int range = max - min + 1;
         int index = ((int) (Math.random() * range) + min);
-        return index;
+        return index%11;
     }
 
 //    /**
@@ -391,10 +364,9 @@ public class Simulator
      * @param std  standard deviation
      * @return
      */
-    private double normal(Rand rng, double mean, double std)
+    private double normal(Rand rng, double mu, double s)
     {
-        return (1 / (std * Math.sqrt(2 * Math.PI))
-                * Math.pow(Math.E, -Math.pow(rng.next() - mean, 2.0) / (2 * Math.pow(std, 2.0))));
+        return Math.exp(mu+(s*rng.next()));
     }
 
     /**
