@@ -9,15 +9,6 @@ public class Stop
     private final String name;
     private Vector<Person> line = new Vector<>();
 
-//    /**
-//     *
-//     * @param name
-//     */
-//    public Stop(String name)
-//    {
-//        this.name = name;
-//    }
-
     /**
      * @param name
      */
@@ -49,9 +40,9 @@ public class Stop
      * @param p
      * @param e
      */
-    public void enqueue(Person p, Event e)
+    public void enqueue(Person p, double clock)
     {
-        p.setStartWait(e.get_time());
+        p.setStartWait(clock);
         line.addElement(p);
     }
 
@@ -69,7 +60,7 @@ public class Stop
      * @return the person at the head of the line
      * @throws Exception if line is empty
      */
-    public Person dequeue(Event e) throws Exception
+    public Person dequeue(double clock) throws Exception
     {
         if(line.isEmpty())
         {
@@ -78,7 +69,7 @@ public class Stop
 
         Person temp = line.elementAt(0);
         line.removeElementAt(0);
-        temp.setEndWait(e.get_time());
+        temp.setEndWait(clock);
         return temp;
     }
 
@@ -95,7 +86,7 @@ public class Stop
      */
     public String toString()
     {
-        return name + ": " + line.size();
+        return name + ": " + line.size() + " " + line.toString();
     }
 
 }

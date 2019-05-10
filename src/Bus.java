@@ -59,13 +59,13 @@ public class Bus
     }
 
     /**
-     * @param s       the current stop
-     * @param e       the triggering event
+     * @param s
+     * @param clock
      * @param maxWait
      * @return
      * @throws Exception
      */
-    public double[] pickup(Stop s, Event e, double maxWait) throws Exception
+    public double[] pickup(Stop s, Double clock, double maxWait) throws Exception
     {
         Person temp;
         double newMaxWait = maxWait;
@@ -75,8 +75,7 @@ public class Bus
         {
             try
             {
-                temp = s.dequeue(e);
-                temp.getStartLoc();
+                temp = s.dequeue(clock);
 
                 seats.add(temp);
                 counter++;

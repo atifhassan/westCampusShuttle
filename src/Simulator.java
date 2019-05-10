@@ -23,9 +23,9 @@ public class Simulator
      * constant to define bus 1 event number
      */
     public final static int busArrive3 = 3;
-
+    private final double minArrivalTime;
     private final double meanArrivalTime;
-    private final double stdArrivalTime;
+    private final double maxArrivalTime;
     /**
      * the total number of riders in the system
      */
@@ -50,13 +50,14 @@ public class Simulator
      * @param mean Mean Inter-arrival Time
      * @param std  standard deviation
      */
-    public Simulator(double mean, double std)
+    public Simulator(double min, double mean, double max)
     {
         FutureEventList = new EventList();
         stream = new Rand();
-        Clock = 360.0;// 6am Monday
+        Clock = 405.0;// 6am Monday
+        minArrivalTime = min;
         meanArrivalTime = mean;
-        stdArrivalTime = std;
+        maxArrivalTime = max;
         this.initialize();
     }
 
@@ -99,12 +100,12 @@ public class Simulator
         fleet = new Bus[] { new Bus('1'), new Bus('2'), new Bus('3') };
 
         // schedule first arrival
-        double time = normal(stream, meanArrivalTime, stdArrivalTime);
+        double time = triangular(stream, minArrivalTime, meanArrivalTime, maxArrivalTime);
         Event first_arrival = new Event(arrival, Clock + time);
         FutureEventList.enqueue(first_arrival);
 
         // schedule all buses
-        double tClock = 0.0;// temporary clock 7am Monday
+        double tClock = 420;// temporary clock 7am Monday
         while (tClock < 7200)
         {
             // Schedule loop for west campus 1
@@ -170,7 +171,7 @@ public class Simulator
         // adds person to bus stop of the starting location
         try
         {
-            stops[index].enqueue(passenger, evt);
+            stops[index].enqueue(passenger, Clock);
         } catch (Exception e)
         {
             System.out.print(stops);
@@ -190,7 +191,7 @@ public class Simulator
         {
             Clock = (Clock - (Clock % 1440)) + 360; // set clock to 6am
         }
-        double time = normal(stream, meanArrivalTime, stdArrivalTime);
+        double time = triangular(stream, minArrivalTime, meanArrivalTime, maxArrivalTime);
         Event next_arrival = new Event(arrival, Clock + time);
         FutureEventList.enqueue(next_arrival);
         LastEventTime = evt.get_time();
@@ -203,27 +204,23 @@ public class Simulator
     public void processBusEvent(Event e) throws Exception
     {
 
-        Bus temp = null;
         int b = -1;
         switch (e.get_type())
         {
             case 1:
                 b = 0;
-                temp = fleet[b];
                 busDropoff(b);
-                busPickup(e, temp, b);
+                busPickup(b);
                 break;
             case 2:
                 b = 1;
-                temp = fleet[b];
                 busDropoff(b);
-                busPickup(e, temp, b);
+                busPickup(b);
                 break;
             case 3:
                 b = 2;
-                temp = fleet[b];
                 busDropoff(b);
-                busPickup(e, temp, b);
+                busPickup(b);
                 break;
             default:
                 throw new Exception("wrong type of event");
@@ -261,18 +258,21 @@ public class Simulator
      * @param b   the index of bus
      * @throws Exception the wrong type of event is passed
      */
-    private void busPickup(Event e, Bus bus, int pointer) throws Exception
+    private void busPickup(int pointer) throws Exception
     {
         pickupCounter[pointer]++;
         // Call bus pickup
         int index = busLocationPointer[pointer];
         // uses temporary stop variable to call pickup
-        double[] d = bus.pickup(stops[index], e, maxWaitTime[index]);
+        double[] d = fleet[pointer].pickup(stops[index], Clock, maxWaitTime[index]);
 
         // update stops max/average wait time statistic - might have to be done with pickup
         accumulatedWaitTime[index] += d[0];
         maxWaitTime[index] = d[1];
         riderCounter[index] += d[2];
+//        if(d[1]>20) {
+//            throw new Exception();
+//        }
         if(busLocationPointer[pointer] >= 10)
         {
             busLocationPointer[pointer] = 0;
@@ -316,7 +316,7 @@ public class Simulator
         int min = start + 1;
         int range = max - min + 1;
         int index = ((int) (Math.random() * range) + min);
-        return index%11;
+        return index % 11;
     }
 
 //    /**
@@ -329,22 +329,22 @@ public class Simulator
 //        return -mean * Math.log(rng.next());
 //    }
 
-//    /**
-//     *
-//     * @param rng
-//     * @param a
-//     * @param b
-//     * @param c
-//     * @return
-//     */
-//    private double triangular(Rand rng, double a, double b, double c)
-//    {
-//        double R = rng.next();
-//        double x;
-//        if(R <= (b - a) / (c - a)) x = a + Math.sqrt((b - a) * (c - a) * R);
-//        else x = c - Math.sqrt((c - b) * (c - a) * (1 - R));
-//        return x;
-//    }
+    /**
+     *
+     * @param rng
+     * @param a
+     * @param b
+     * @param c
+     * @return
+     */
+    private double triangular(Rand rng, double a, double b, double c)
+    {
+        double R = rng.next();
+        double x;
+        if(R <= (b - a) / (c - a)) x = a + Math.sqrt((b - a) * (c - a) * R);
+        else x = c - Math.sqrt((c - b) * (c - a) * (1 - R));
+        return x;
+    }
 
 //    /**
 //     * @param rng
@@ -356,18 +356,6 @@ public class Simulator
 //    {
 //        return a + (b - a) * rng.next();
 //    }
-
-    /**
-     *
-     * @param rng  random number stream
-     * @param mean
-     * @param std  standard deviation
-     * @return
-     */
-    private double normal(Rand rng, double mu, double s)
-    {
-        return Math.exp(mu+(s*rng.next()));
-    }
 
     /**
      *

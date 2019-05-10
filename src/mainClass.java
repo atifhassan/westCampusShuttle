@@ -9,9 +9,9 @@ public class mainClass
      */
     public static void main(String argv[])
     {
-        Simulator sim = new Simulator(,0);
+        Simulator sim = new Simulator(0, .5, 1.5);
         // Loop until clock is greater than 7200 minutes, 24hr Mon-Fri
-        while (sim.getClock() < 1440)
+        while (sim.getClock() < 7200)
         {
             Event evt = sim.FutureEventList.getMin(); // get imminent event
             sim.FutureEventList.dequeue(); // delete the event
@@ -34,5 +34,4 @@ public class mainClass
         sim.generateReport();
         System.out.println("Done!");
     }
-
 }

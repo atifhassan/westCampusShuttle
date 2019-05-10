@@ -13,7 +13,6 @@ public class Event
      */
     private int type;
 
-
     /**
      * 
      * @param _type the event type
@@ -41,6 +40,12 @@ public class Event
     public int get_type()
     {
         return type;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Event [time=" + time + ", type=" + type + "]";
     }
 
 }

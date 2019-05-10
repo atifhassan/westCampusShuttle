@@ -1,81 +1,81 @@
 REPORT:
 ------------------
-Run Time: 1440.0
+Run Time: 7560.0
 >BUS STATISTICS:
-	West Campus 1:		581.100335
-	West Campus 2:		403.915660
-	West Campus 3:		236.596496
+	West Campus 1:		3741.779362
+	West Campus 2:		3128.562888
+	West Campus 3:		1632.359650
 
 >>Utilization
-	West Campus 1:		0.403542 people/minute
-	West Campus 2:		0.280497 people/minute
-	West Campus 3:		0.164303 people/minute
-	West Campus 1:		10.000000
-	West Campus 2:		9.000000
-	West Campus 3:		6.000000
+	West Campus 1:		0.494944 people/minute
+	West Campus 2:		0.413831 people/minute
+	West Campus 3:		0.215921 people/minute
+	West Campus 1:		22.000000
+	West Campus 2:		18.000000
+	West Campus 3:		16.000000
 
 >STOP STATISTICS
 
 >>Average Number Of People In Queue:
-	West Campus         		0.06 people
-	Rapidan River O     		0.05 people
-	Field House O       		0.04 people
-	RAC O               		0.05 people
-	Mason Pond O        		0.06 people
-	Presidents Park     		0.06 people
-	Masonvale           		0.05 people
-	Rappohannock        		0.05 people
-	RAC I               		0.06 people
-	Field House I       		0.06 people
-	Rapidan River I     		0.05 people
+	West Campus         		0.09 people
+	Rapidan River O     		0.09 people
+	Field House O       		0.08 people
+	RAC O               		0.08 people
+	Mason Pond O        		0.09 people
+	Presidents Park     		0.14 people
+	Masonvale           		0.09 people
+	Rappohannock        		0.09 people
+	RAC I               		0.09 people
+	Field House I       		0.10 people
+	Rapidan River I     		0.08 people
 
 >>Maximum Length of Queues:
-	West Campus         		4.00 people
-	Rapidan River O     		4.00 people
-	Field House O       		3.00 people
-	RAC O               		3.00 people
-	Mason Pond O        		5.00 people
-	Presidents Park     		5.00 people
-	Masonvale           		3.00 people
-	Rappohannock        		3.00 people
-	RAC I               		4.00 people
-	Field House I       		5.00 people
-	Rapidan River I     		3.00 people
+	West Campus         		7.00 people
+	Rapidan River O     		8.00 people
+	Field House O       		7.00 people
+	RAC O               		8.00 people
+	Mason Pond O        		8.00 people
+	Presidents Park     		6.00 people
+	Masonvale           		9.00 people
+	Rappohannock        		10.00 people
+	RAC I               		6.00 people
+	Field House I       		8.00 people
+	Rapidan River I     		7.00 people
 
 >>Average Wait Time People In Queue:
-	West Campus         		5.75 minutes
-	Rapidan River O     		7.68 minutes
-	Field House O       		6.26 minutes
-	RAC O               		7.46 minutes
-	Mason Pond O        		6.00 minutes
-	Presidents Park     		6.97 minutes
-	Masonvale           		7.43 minutes
-	Rappohannock        		6.63 minutes
-	RAC I               		6.71 minutes
-	Field House I       		7.52 minutes
-	Rapidan River I     		6.21 minutes
-	West Campus         		85 people
-	Rapidan River O     		71 people
-	Field House O       		69 people
-	RAC O               		70 people
-	Mason Pond O        		81 people
-	Presidents Park     		86 people
-	Masonvale           		76 people
-	Rappohannock        		71 people
-	RAC I               		72 people
-	Field House I       		75 people
-	Rapidan River I     		80 people
-	836 people
+	West Campus         		6.16 minutes
+	Rapidan River O     		6.39 minutes
+	Field House O       		6.43 minutes
+	RAC O               		6.58 minutes
+	Mason Pond O        		6.70 minutes
+	Presidents Park     		6.26 minutes
+	Masonvale           		6.77 minutes
+	Rappohannock        		6.83 minutes
+	RAC I               		6.88 minutes
+	Field House I       		6.81 minutes
+	Rapidan River I     		6.65 minutes
+	West Campus         		746 people
+	Rapidan River O     		743 people
+	Field House O       		742 people
+	RAC O               		686 people
+	Mason Pond O        		742 people
+	Presidents Park     		706 people
+	Masonvale           		695 people
+	Rappohannock        		744 people
+	RAC I               		736 people
+	Field House I       		796 people
+	Rapidan River I     		672 people
+	8008 people
 
 >>Max Wait Time People In Queue:
-	West Campus         		17.35 minutes
-	Rapidan River O     		18.33 minutes
-	Field House O       		18.70 minutes
-	RAC O               		17.04 minutes
-	Mason Pond O        		16.48 minutes
-	Presidents Park     		16.47 minutes
-	Masonvale           		18.63 minutes
-	Rappohannock        		18.86 minutes
-	RAC I               		21.48 minutes
-	Field House I       		21.01 minutes
-	Rapidan River I     		16.70 minutes
+	West Campus         		19.60 minutes
+	Rapidan River O     		20.87 minutes
+	Field House O       		20.52 minutes
+	RAC O               		21.65 minutes
+	Mason Pond O        		24.63 minutes
+	Presidents Park     		28.09 minutes
+	Masonvale           		20.96 minutes
+	Rappohannock        		27.38 minutes
+	RAC I               		30.69 minutes
+	Field House I       		31.94 minutes
+	Rapidan River I     		34.16 minutes
