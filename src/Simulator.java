@@ -51,10 +51,10 @@ public class Simulator
      * @param mean Mean Inter-arrival Time
      * @param std  standard deviation
      */
-    public Simulator(double min, double mean, double max)
+    public Simulator(double min, double mean, double max, double seed)
     {
         FutureEventList = new EventList();
-        stream = new Rand();
+        stream = new Rand(seed);
         Clock = 405.0;// 6am Monday
         minArrivalTime = min;
         meanArrivalTime = mean;
@@ -145,7 +145,7 @@ public class Simulator
             tClock += 30;
         }
     }
-    
+
     /**
      * @return current system time in minutes
      */
@@ -370,7 +370,7 @@ public class Simulator
                 out.printf("\tWest Campus %d:\t\t%.2f people/minute\n", 1 + index, i);
                 index++;
             }
-            
+
             ////
             out.printf("\n>>>>STOP STATISTICS\n");
             //
@@ -406,7 +406,7 @@ public class Simulator
                 sum += i;
             }
             out.printf("\n>>%-20s\t\t%d people\n","Total People Served:", sum);
-            
+
             ////
             out.printf("\n>>Average Wait Time People In Queue:\n");
             index = 0;
@@ -430,5 +430,13 @@ public class Simulator
         {
             e.printStackTrace();
         }
+    }
+    public double[] getAccBusUtil()
+    {
+      return accumulatedBusUtilization[];
+    }
+    public double[] getBusClock()
+    {
+      return busClock[];
     }
 }
