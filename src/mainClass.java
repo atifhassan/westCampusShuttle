@@ -12,10 +12,10 @@ public class mainClass
         long startTime = System.nanoTime();
         Simulator sim;
         long rep = 950; // number of repeated simulations
-        double[] averageUtil = new double[] {0.0,0.0,0.0};
+        double[] averageUtil = new double[] { 0.0, 0.0, 0.0 };
         double[] AverageQueueLength = new double[11];
         long[] AverageMaxQueueLength = new long[11];
-        Stop[]  stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
+        Stop[] stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
         // Loop until clock is greater than 7200 minutes, 24hr Mon-Fri
@@ -47,29 +47,30 @@ public class mainClass
             double[] busClock = sim.getBusClock();
             double[] accumulatedQueueLength = sim.getAccQueueLength();
             long[] maxQueueLength = sim.getMaxQueueLength();
+            
             for (int j = 0; j < averageUtil.length; j++)
             {
                 averageUtil[j] += (accumulatedBusUtil[j] / busClock[j]);
             }
-            for (int l = 0; l < AverageQueueLength.length; l++)
+            for (int j = 0; j < AverageQueueLength.length; j++)
             {
-                AverageQueueLength[l] += accumulatedQueueLength[l] / busClock[l];
+                AverageQueueLength[j] += accumulatedQueueLength[j] / 1500;
             }
-            for(int p = 0; p < maxQueueLength.length; p++)
+            for (int j = 0; j < maxQueueLength.length; j++)
             {
-                AverageMaxQueueLength[p] += maxQueueLength[p];
+                AverageMaxQueueLength[j] += maxQueueLength[j];
             }
         }
+
         for (int i = 0; i < averageUtil.length; i++)
         {
-            averageUtil[i] = averageUtil[i]/rep;
+            averageUtil[i] = averageUtil[i] / rep;
         }
         for (int m = 0; m < AverageQueueLength.length; m++)
         {
-            AverageQueueLength[m] = AverageQueueLength[m]/rep;
-            AverageMaxQueueLength[m] = AverageMaxQueueLength[m]/rep;
+            AverageQueueLength[m] = AverageQueueLength[m] / rep;
+            AverageMaxQueueLength[m] = AverageMaxQueueLength[m] / rep;
         }
-
 
         /*
          * double AverageQueueLength[] = new double[11]; for (int i = 0; i < AverageQueueLength.length; i++) {
@@ -87,37 +88,33 @@ public class mainClass
          */
 
         int index = 0;
-        out.printf("SIMULATION REPORT:\n");
-        out.printf("-----------------------------------------------------\n");
-        out.printf("Run Time: " + 1500);
-        out.printf("Number of reps: " + rep);
-        out.printf("\n>>>>BUS STATISTICS:\n");
-        out.printf("\n>>Utilization\n");
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        double seconds = (double) elapsedTime / 1000000000.0;
+        System.out.printf("SIMULATION REPORT:\n");
+        System.out.printf("-----------------------------------------------------\n");
+        System.out.printf("Simulation Time:\t 1500 minutes\n");
+        System.out.printf("Runtime:\t\t %.3f seconds\n", seconds);
+        System.out.printf("Number of Replications:\t " + rep);
+        System.out.printf("\n\n>>Average Utilization\n");
         for (double i : averageUtil)
         {
-            System.out.printf("\tWest Campus %d:\t\t%.2f people/minute\n", 1 + index, i);
+            System.out.printf("West Campus %d:\t%.2f people/minute\n", 1 + index, i);
             index++;
         }
-        System.out.printf("Replications:\t %d\n",rep);
-        }
-        out.printf("\n>>Average Number Of People In Queue:\n");
+        System.out.printf("\n>>Average Number Of People In Queue\n");
         index = 0;
         for (double i : AverageQueueLength)
         {
-            out.printf("\t%-20s\t\t%.2f people\n", stops[index].getName(), i);
+            System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
             index++;
         }
-        out.printf("\n>>Maximum Length of Queues:\n");
+        System.out.printf("\n>>Maximum Length of Queues\n");
         index = 0;
-        for (double i : maxQueueLength)
+        for (double i : AverageMaxQueueLength)
         {
-            out.printf("\t%-20s\t\t%.2f people\n", stops[index].getName(), i);
+            System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
             index++;
         }
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
-        double seconds = (double)elapsedTime / 1000000000.0;
-        System.out.printf("Runtime:\t %.3f seconds\n",seconds);
-
     }
 }

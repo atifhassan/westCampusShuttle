@@ -146,6 +146,26 @@ public class Simulator
         }
     }
 
+    public double[] getAccBusUtil()
+    {
+        return accumulatedBusUtilization;
+    }
+
+    public double[] getBusClock()
+    {
+        return busClock;
+    }
+
+    public double[] getAccQueueLength()
+    {
+        return accumulatedQueueLength;
+    }
+
+    public long[] getMaxQueueLength()
+    {
+        return maxQueueLength;
+    }
+
     /**
      * @return current system time in minutes
      */
@@ -391,23 +411,5 @@ public class Simulator
         {
             e.printStackTrace();
         }
-    }
-
-    public double[] getAccBusUtil()
-    {
-        return accumulatedBusUtilization;
-    }
-
-    public double[] getBusClock()
-    {
-        return busClock;
-    }
-    public double[] getAccQueueLength()
-    {
-      return accumulatedQueueLength;
-    }
-    public long[] getMaxQueueLength()
-    {
-      return maxQueueLength;
     }
 }
