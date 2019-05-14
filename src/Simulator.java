@@ -26,21 +26,23 @@ public class Simulator
     private final double minArrivalTime;
     private final double meanArrivalTime;
     private final double maxArrivalTime;
+    
     /**
-     * the total number of riders in the system
+     * State Variables
      */
-    public int[] riderCounter;
-    private int[] pickupCounter; // the total number of times the pickup event is called
-    private double[] accumulatedQueueLength;
-    private double[] accumulatedWaitTime;
-    private double[] maxWaitTime;
-    private double[] accumulatedBusUtilization;
-    private double[] maxOccupancy;
-    private double[] busClock;
-    private final double[] busBreakTime = { 1410, 1425, 1420 };
-    private double Clock;
+    public int[] riderCounter; // the total number of riders in the system per stop
+    private int[] pickupCounter; // the total number of times the pickup event is called per bus
+    private double[] accumulatedQueueLength; // the queue length over the run of the simulation per stop
+    private double[] accumulatedWaitTime; // the wait time over the run of the simulation per stop
+    private double[] maxWaitTime; // the longest a person has had to wait for a bus per stop
+    private long[] maxQueueLength; // the longest the line got at each stop
+    private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus 
+    
     private double LastEventTime;
-    private long[] maxQueueLength;
+    private final double[] busBreakTime = { 1410, 1425, 1420 };
+    private double[] busClock;
+
+    private double Clock;
     public EventList FutureEventList; // List of events that will happen in the future
     private Rand stream;
     private Stop[] stops; // the array of bus stop queues
@@ -69,7 +71,6 @@ public class Simulator
     {
         LastEventTime = 0.0;
         accumulatedBusUtilization = new double[] { 0.0, 0.0, 0.0 };
-        maxOccupancy = new double[] { 0.0, 0.0, 0.0 };
         pickupCounter = new int[] { 0, 0, 0 };
         maxQueueLength = new long[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         riderCounter = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -78,7 +79,7 @@ public class Simulator
         maxWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
-                new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
+                new Stop("Rappahannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
         busLocationPointer = new int[] { 0, 0, 0 };
 
         // creates the buses and starts them at west campus
@@ -234,10 +235,6 @@ public class Simulator
     {
         Bus bus = fleet[b];
         double timeDif = Clock - busClock[b];
-        if(bus.getSize() > maxOccupancy[b])
-        {
-            maxOccupancy[b] = bus.getSize();
-        }
         accumulatedBusUtilization[b] += timeDif * bus.getSize();
         bus.arrive(busLocationPointer[b]);
         if(busLocationPointer[b] == 0 && Clock > busBreakTime[b])
