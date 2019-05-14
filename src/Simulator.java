@@ -91,7 +91,7 @@ public class Simulator
 
         // schedule all buses
         double tClock = 420;// temporary clock 7am Monday
-        busClock = new double[]{tClock,tClock+15,tClock+10};
+        busClock = new double[] { tClock, tClock + 15, tClock + 10 };
         while (tClock < 7200)
         {
             // Schedule loop for west campus 1
@@ -125,7 +125,7 @@ public class Simulator
             FutureEventList.enqueue(new Event(busArrive2, tClock2 + 22.818));
 
             // accounts for break for west campus 3
-            if(!((tClock % 1440) >= 645 && (tClock % 1440) < 900))
+            if(!(tClock >= 645 && tClock < 900))
             {
                 // schedule loop for west campus 3
                 double tClock3 = tClock + 10.0;
@@ -188,11 +188,6 @@ public class Simulator
             maxQueueLength[index] = stops[index].getSize();
         }
 
-        // Create next arrival
-        if((Clock % 1440) < 360) // people can't arrive before 6am
-        {
-            Clock = (Clock - (Clock % 1440)) + 360; // set clock to 6am
-        }
         double time = triangular(stream, minArrivalTime, meanArrivalTime, maxArrivalTime);
         Event next_arrival = new Event(arrival, Clock + time);
         FutureEventList.enqueue(next_arrival);
@@ -206,10 +201,9 @@ public class Simulator
     public void processBusEvent(Event e) throws Exception
     {
 
-        int b = e.get_type()-1;
-        if(busDropoff(b));
-        busPickup(b);
-        busClock[b] += e.get_time()-busClock[b];
+        int b = e.get_type() - 1;
+        if(busDropoff(b)) busPickup(b);
+        busClock[b] += e.get_time() - busClock[b];
     }
 
     /**
@@ -226,7 +220,7 @@ public class Simulator
         }
         accumulatedBusUtilization[b] += timeDif * bus.getSize();
         bus.arrive(busLocationPointer[b]);
-        if(busLocationPointer[b] == 0 && (Clock % 1440) > busBreakTime[b])
+        if(busLocationPointer[b] == 0 && Clock > busBreakTime[b])
         {
             if(bus.getSize() != 0)
             {
@@ -242,9 +236,8 @@ public class Simulator
      * @param e   the event to be processed
      * @param bus the bus being used
      * @param b   the index of bus
-     * @throws Exception the wrong type of event is passed
      */
-    private void busPickup(int pointer) throws Exception
+    private void busPickup(int pointer)
     {
         pickupCounter[pointer]++;
         // Call bus pickup
@@ -256,9 +249,6 @@ public class Simulator
         accumulatedWaitTime[index] += d[0];
         maxWaitTime[index] = d[1];
         riderCounter[index] += d[2];
-//        if(d[1]>20) {
-//            throw new Exception();
-//        }
         if(busLocationPointer[pointer] >= 10)
         {
             busLocationPointer[pointer] = 0;
@@ -277,14 +267,6 @@ public class Simulator
      */
     private int genStartLoc(double time)
     {
-        /*
-         * double temp = Math.random(); double wcP, rroP, fhoP, racoP, mpoP, ppP, mvP, rapP, raciP, fhiP, rriP; wcP =
-         * -0.15 * Math.log(time) + 0.8423; rroP = -0.15 * Math.log(time) + 0.8423; fhoP = -0.15 * Math.log(time) +
-         * 0.8423; racoP = -0.15 * Math.log(time) + 0.8423; mpoP = -0.15 * Math.log(time) + 0.8423; ppP = -0.15 *
-         * Math.log(time) + 0.8423; mvP = -0.15 * Math.log(time) + 0.8423; rapP = -0.15 * Math.log(time) + 0.8423; raciP
-         * = -0.15 * Math.log(time) + 0.8423; fhiP = -0.15 * Math.log(time) + 0.8423; rriP = -0.15 * Math.log(time) +
-         * 0.8423;
-         */
         int max = 10;
         int min = 0;
         int range = max - min + 1;
@@ -305,16 +287,6 @@ public class Simulator
         return index % 11;
     }
 
-//    /**
-//     * @param rng
-//     * @param mean
-//     * @return
-//     */
-//    private double exponential(Rand rng, double mean)
-//    {
-//        return -mean * Math.log(rng.next());
-//    }
-
     /**
      *
      * @param rng
@@ -331,17 +303,6 @@ public class Simulator
         else x = c - Math.sqrt((c - b) * (c - a) * (1 - R));
         return x;
     }
-
-//    /**
-//     * @param rng
-//     * @param a
-//     * @param b
-//     * @return
-//     */
-//    private double uniform(Rand rng, double a, double b)
-//    {
-//        return a + (b - a) * rng.next();
-//    }
 
     /**
      *
@@ -405,7 +366,7 @@ public class Simulator
                 index++;
                 sum += i;
             }
-            out.printf("\n>>%-20s\t\t%d people\n","Total People Served:", sum);
+            out.printf("\n>>%-20s\t\t%d people\n", "Total People Served:", sum);
 
             ////
             out.printf("\n>>Average Wait Time People In Queue:\n");
@@ -431,12 +392,14 @@ public class Simulator
             e.printStackTrace();
         }
     }
+
     public double[] getAccBusUtil()
     {
-      return accumulatedBusUtilization[];
+        return accumulatedBusUtilization;
     }
+
     public double[] getBusClock()
     {
-      return busClock[];
+        return busClock;
     }
 }

@@ -59,13 +59,12 @@ public class Bus
     }
 
     /**
-     * @param s
-     * @param clock
-     * @param maxWait
-     * @return
-     * @throws Exception
+     * @param s the stop the bus is at
+     * @param clock the current simulation time
+     * @param maxWait the current max wait time
+     * @return array of accumulated waitTime, new MaxWait, number of passengers picked up
      */
-    public double[] pickup(Stop s, Double clock, double maxWait) throws Exception
+    public double[] pickup(Stop s, Double clock, double maxWait)
     {
         Person temp;
         double newMaxWait = maxWait;
@@ -89,10 +88,6 @@ public class Bus
             {
                 ex.printStackTrace();
             }
-        }
-        if(this.isFull())
-        {
-            throw new Exception("Bus is Full");
         }
         return new double[] { waitTime, newMaxWait, counter };
     }
