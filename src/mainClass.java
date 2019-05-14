@@ -13,7 +13,7 @@ public class mainClass
         Simulator sim;
         int rep = 950; // number of repeated simulations
         double[] averageUtil = new double[] {0.0,0.0,0.0};
-        double[][] averageUtilData = new double[3][500];
+        double[][] averageUtilData = new double[3][rep];
         double[] AverageQueueLength = new double[11];
         long[] AverageMaxQueueLength = new long[11];
         int riderCountSum[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -45,6 +45,7 @@ public class mainClass
                     }
                 }
             }
+            
             double[] accumulatedBusUtil = sim.getAccBusUtil();
             double[] busClock = sim.getBusClock();
             double[] accumulatedQueueLength = sim.getAccQueueLength();
@@ -52,7 +53,7 @@ public class mainClass
             for (int j = 0; j < averageUtil.length; j++)
             {
                 averageUtil[j] += (accumulatedBusUtil[j] / busClock[j]);
-                averageUtilData[j][i] = accumulatedBusUtil[j] / busClock[j];
+                averageUtilData[j][(int)i] = accumulatedBusUtil[j] / busClock[j];
             }
             for (int j = 0; j < AverageQueueLength.length; j++)
             {
@@ -117,6 +118,8 @@ public class mainClass
         for (double i : averageUtil)
         {
             System.out.printf("West Campus %d:\t%.2f people/minute\n", 1 + index, i);
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean(averageUtilData[index], rep) + tDiff(1.96,variance(averageUtilData[index], rep),rep))));
+            System.out.printf("\tLower bound: %.2f\n",( (mean(averageUtilData[index], rep) - tDiff(1.96,variance(averageUtilData[index], rep),rep))));
             index++;
         }
         System.out.printf("\n>>Average Number Of People In Queue\n");
@@ -124,8 +127,6 @@ public class mainClass
         for (double i : AverageQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
-            System.out.println("Average utilization for bus " + i + " upper bound: " + (mean(averageUtilData[i], rep) + tDiff(1.96,variance(averageUtilData[i], rep),rep)));
-            System.out.println("Average utilization for bus " + i + " lower bound: " + (mean(averageUtilData[i], rep) - tDiff(1.96,variance(averageUtilData[i], rep),rep)));
             index++;
         }
         System.out.printf("\n>>Maximum Length of Queues\n");
