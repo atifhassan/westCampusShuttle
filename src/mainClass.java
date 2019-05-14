@@ -9,11 +9,12 @@ public class mainClass
      */
     public static void main(String argv[])
     {
+        long startTime = System.nanoTime();
         Simulator sim;
-        int rep = 500; // number of repeated simulations
+        long rep = 950; // number of repeated simulations
         double[] averageUtil = new double[] {0.0,0.0,0.0};
         // Loop until clock is greater than 7200 minutes, 24hr Mon-Fri
-        for (int i = 0; i < rep; i++)
+        for (long i = 0; i < rep; i++)
         {
             sim = new Simulator(0, .5, 1.5, (Math.random() * .01) + .99);
             while (sim.getClock() < 1500)
@@ -69,7 +70,12 @@ public class mainClass
         {
             System.out.printf("\tWest Campus %d:\t\t%.2f people/minute\n", 1 + index, i);
             index++;
-        }
+        }   
+        System.out.printf("Replications:\t %d\n",rep); 
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
+        double seconds = (double)elapsedTime / 1000000000.0;
+        System.out.printf("Runtime:\t %.3f seconds\n",seconds); 
 
     }
 }
