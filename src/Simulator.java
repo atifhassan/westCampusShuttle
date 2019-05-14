@@ -35,12 +35,15 @@ public class Simulator
     private int[] pickupCounter; // the total number of times the pickup event is called per bus
     private double[] maxWaitTime; // the longest a person has had to wait for a bus per stop
     private long[] maxQueueLength; // the longest the line got at each stop
+<<<<<<< HEAD
 
     /**
      * Statistics
      */
     private double[] accumulatedQueueLength; // the queue length over the run of the simulation per stop
     private double[] accumulatedWaitTime; // the wait time over the run of the simulation per stop
+=======
+>>>>>>> 2b20de3ab857c46f4bf28562cd1530c27c573857
     private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus
 
     private double LastEventTime;
@@ -170,7 +173,10 @@ public class Simulator
     {
         return maxQueueLength;
     }
-
+    public double[] getAccumulatedWaitTime()
+    {
+      return accumulatedWaitTime;
+    }
     /**
      * @return current system time in minutes
      */
