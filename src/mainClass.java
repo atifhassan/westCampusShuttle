@@ -12,13 +12,13 @@ public class mainClass
         long startTime = System.nanoTime();
         Simulator sim;
         int rep = 950; // number of repeated simulations
-        double[] averageUtil = new double[] {0.0,0.0,0.0};
+        double[] averageUtil = new double[] { 0.0, 0.0, 0.0 };
         double[][] averageUtilData = new double[3][rep];
         double[] AverageQueueLength = new double[11];
         double[][] AverageQueueLengthData = new double[11][rep];
         long[] AverageMaxQueueLength = new long[11];
-        long[][] AverageMaxQueueLengthData = new long[11][rep];
-        int[] riderCountSum[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        long[][] MaxQueueLengthData = new long[11][rep];
+        int[] riderCountSum = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int[][] riderCountSumData = new int[11][rep];
         Stop[] stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
@@ -56,22 +56,22 @@ public class mainClass
             for (int j = 0; j < averageUtil.length; j++)
             {
                 averageUtil[j] += (accumulatedBusUtil[j] / busClock[j]);
-                averageUtilData[j][(int)i] = accumulatedBusUtil[j] / busClock[j];
+                averageUtilData[j][(int) i] = accumulatedBusUtil[j] / busClock[j];
             }
             for (int j = 0; j < AverageQueueLength.length; j++)
             {
                 AverageQueueLength[j] += accumulatedQueueLength[j] / 1500;
-                AverageQueueLengthData[j][(int)i] = accumulatedQueueLength[j] / 1500;
+                AverageQueueLengthData[j][(int) i] = accumulatedQueueLength[j] / 1500;
             }
             for (int j = 0; j < maxQueueLength.length; j++)
             {
                 AverageMaxQueueLength[j] += maxQueueLength[j];
-                AverageMaxQueueLengthData[j][(int)i] = maxQueueLength[j];
+                MaxQueueLengthData[j][(int) i] = maxQueueLength[j];
             }
             for (int j = 0; j < riderCountSum.length; j++)
             {
-                riderCountSum[j]+=sim.riderCounter[j];
-                riderCountSumData[j][(int)i] = sim.riderCounter[j];
+                riderCountSum[j] += sim.riderCounter[j];
+                riderCountSumData[j][(int) i] = sim.riderCounter[j];
             }
         }
 
@@ -87,7 +87,7 @@ public class mainClass
         int riderCountAverage[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         for (int i = 0; i < riderCountSum.length; i++)
         {
-            riderCountAverage[i] = riderCountSum[i]/(int)rep;
+            riderCountAverage[i] = riderCountSum[i] / (int) rep;
         }
 
         /*
@@ -124,8 +124,10 @@ public class mainClass
         for (double i : averageUtil)
         {
             System.out.printf("West Campus %d:\t%.2f people/minute\n", 1 + index, i);
-            System.out.printf("\tUpper Bound: %.2f\n", ((mean(averageUtilData[index], rep) + tDiff(1.96,variance(averageUtilData[index], rep),rep))));
-            System.out.printf("\tLower bound: %.2f\n",( (mean(averageUtilData[index], rep) - tDiff(1.96,variance(averageUtilData[index], rep),rep))));
+            System.out.printf("\tUpper Bound: %.2f\n",
+                    ((mean(averageUtilData[index], rep) + tDiff(1.96, variance(averageUtilData[index], rep), rep))));
+            System.out.printf("\tLower bound: %.2f\n",
+                    ((mean(averageUtilData[index], rep) - tDiff(1.96, variance(averageUtilData[index], rep), rep))));
             index++;
         }
         System.out.printf("\n>>Average Number Of People In Queue\n");
@@ -133,8 +135,10 @@ public class mainClass
         for (double i : AverageQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
-            System.out.printf("\tUpper Bound: %.2f\n", ((mean(AverageQueueLengthData[index], rep) + tDiff(1.96,variance(AverageQueueLengthData[index], rep),rep))));
-            System.out.printf("\tLower bound: %.2f\n",( (mean(AverageQueueLengthData[index], rep) - tDiff(1.96,variance(AverageQueueLengthData[index], rep),rep))));
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean(AverageQueueLengthData[index], rep)
+                    + tDiff(1.96, variance(AverageQueueLengthData[index], rep), rep))));
+            System.out.printf("\tLower bound: %.2f\n", ((mean(AverageQueueLengthData[index], rep)
+                    - tDiff(1.96, variance(AverageQueueLengthData[index], rep), rep))));
             index++;
         }
         System.out.printf("\n>>Maximum Length of Queues\n");
@@ -142,8 +146,10 @@ public class mainClass
         for (double i : AverageMaxQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
-            System.out.printf("\tUpper Bound: %.2f\n", ((mean((double)AverageMaxQueueLengthData[index], rep) + tDiff(1.96,variance((double)AverageMaxQueueLengthData[index], rep),rep))));
-            System.out.printf("\tLower bound: %.2f\n",( (mean((double)AverageMaxQueueLengthData[index], rep) - tDiff(1.96,variance((double)AverageMaxQueueLengthData[index], rep),rep))));
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean((MaxQueueLengthData[index]), rep)
+                    + tDiff(1.96, variance(MaxQueueLengthData[index], rep), rep))));
+            System.out.printf("\tLower bound: %.2f\n", ((mean(MaxQueueLengthData[index], rep)
+                    - tDiff(1.96, variance(MaxQueueLengthData[index], rep), rep))));
             index++;
         }
         System.out.printf("\n>>Total People through Queues:\n");
@@ -151,32 +157,79 @@ public class mainClass
         for (int i : riderCountAverage)
         {
             System.out.printf("%-20s\t%d people\n", stops[index].getName(), i);
-            System.out.printf("\tUpper Bound: %.2f\n", ((mean(riderCountSumData[index], rep) + tDiff(1.96,variance(riderCountSumData[index], rep),rep))));
-            System.out.printf("\tLower bound: %.2f\n",( (mean(riderCountSumData[index], rep) - tDiff(1.96,variance(riderCountSumData[index], rep),rep))));
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean(riderCountSumData[index], rep)
+                    + tDiff(1.96, variance(riderCountSumData[index], rep), rep))));
+            System.out.printf("\tLower bound: %.2f\n", ((mean(riderCountSumData[index], rep)
+                    - tDiff(1.96, variance(riderCountSumData[index], rep), rep))));
             index++;
         }
     }
-    static double variance(double a[],int n)
-    {
-      double s = 0;
-      for (int i = 0; i < n; i++)
-          s += a[i];
-      double mean = (double)s/(double)n;
-      double sqDiff = 0;
-      for (int i = 0; i < n; i++)
-        sqDiff += (a[i] - mean)*(a[i] - mean);
 
-      return (double)sqDiff/n;
-    }
-    static double mean(double a[], int n)
+    private static double variance(double a[], int n)
     {
-      double s = 0;
-      for (int i = 0; i < n; i++)
-        s += a[i];
-      return (double)s/(double)n;
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        double mean = (double) s / (double) n;
+        double sqDiff = 0;
+        for (int i = 0; i < n; i++)
+            sqDiff += (a[i] - mean) * (a[i] - mean);
+
+        return (double) sqDiff / n;
     }
+
+    private static double variance(int a[], int n)
+    {
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        double mean = (double) s / (double) n;
+        double sqDiff = 0;
+        for (int i = 0; i < n; i++)
+            sqDiff += (a[i] - mean) * (a[i] - mean);
+
+        return (double) sqDiff / n;
+    }
+
+    private static double variance(long a[], int n)
+    {
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        double mean = (double) s / (double) n;
+        double sqDiff = 0;
+        for (int i = 0; i < n; i++)
+            sqDiff += (a[i] - mean) * (a[i] - mean);
+
+        return (double) sqDiff / n;
+    }
+
+    private static double mean(double a[], int n)
+    {
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        return (double) s / (double) n;
+    }
+
+    private static double mean(long a[], int n)
+    {
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        return (double) s / (double) n;
+    }
+
+    private static double mean(int a[], int n)
+    {
+        double s = 0;
+        for (int i = 0; i < n; i++)
+            s += a[i];
+        return (double) s / (double) n;
+    }
+
     static double tDiff(double t, double var, double n)
     {
-      return t * Math.sqrt(var/n);
+        return t * Math.sqrt(var / n);
     }
 }

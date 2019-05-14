@@ -26,6 +26,7 @@ public class Simulator
     private final double minArrivalTime;
     private final double meanArrivalTime;
     private final double maxArrivalTime;
+    private final double[] busBreakTime = { 1410, 1425, 1420 };
     
     /**
      * State Variables
@@ -39,7 +40,6 @@ public class Simulator
     private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus 
     
     private double LastEventTime;
-    private final double[] busBreakTime = { 1410, 1425, 1420 };
     private double[] busClock;
 
     private double Clock;
