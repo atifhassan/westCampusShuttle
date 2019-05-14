@@ -29,7 +29,7 @@ public class Simulator
     /**
      * the total number of riders in the system
      */
-    private int[] riderCounter;
+    public int[] riderCounter;
     private int[] pickupCounter; // the total number of times the pickup event is called
     private double[] accumulatedQueueLength;
     private double[] accumulatedWaitTime;
@@ -144,6 +144,26 @@ public class Simulator
 
             tClock += 30;
         }
+    }
+
+    public double[] getAccBusUtil()
+    {
+        return accumulatedBusUtilization;
+    }
+
+    public double[] getBusClock()
+    {
+        return busClock;
+    }
+
+    public double[] getAccQueueLength()
+    {
+        return accumulatedQueueLength;
+    }
+
+    public long[] getMaxQueueLength()
+    {
+        return maxQueueLength;
     }
 
     /**
@@ -376,14 +396,6 @@ public class Simulator
                 out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i / riderCounter[index]);
                 index++;
             }
-            //
-            out.printf("\n>>Max Wait Time People In Queue:\n");
-            index = 0;
-            for (double i : maxWaitTime)
-            {
-                out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i);
-                index++;
-            }
 
             /////
             out.close();
@@ -391,23 +403,5 @@ public class Simulator
         {
             e.printStackTrace();
         }
-    }
-
-    public double[] getAccBusUtil()
-    {
-        return accumulatedBusUtilization;
-    }
-
-    public double[] getBusClock()
-    {
-        return busClock;
-    }
-    public double[] getAccQueueLength()
-    {
-      return accumulatedQueueLength;
-    }
-    public long[] getMaxQueueLength()
-    {
-      return maxQueueLength;
     }
 }
