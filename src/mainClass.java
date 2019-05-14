@@ -15,8 +15,11 @@ public class mainClass
         double[] averageUtil = new double[] {0.0,0.0,0.0};
         double[][] averageUtilData = new double[3][rep];
         double[] AverageQueueLength = new double[11];
+        double[][] AverageQueueLengthData = new double[11][rep];
         long[] AverageMaxQueueLength = new long[11];
-        int riderCountSum[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        long[][] AverageMaxQueueLengthData = new long[11][rep];
+        int[] riderCountSum[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        int[][] riderCountSumData = new int[11][rep];
         Stop[] stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
@@ -45,7 +48,7 @@ public class mainClass
                     }
                 }
             }
-            
+
             double[] accumulatedBusUtil = sim.getAccBusUtil();
             double[] busClock = sim.getBusClock();
             double[] accumulatedQueueLength = sim.getAccQueueLength();
@@ -58,14 +61,17 @@ public class mainClass
             for (int j = 0; j < AverageQueueLength.length; j++)
             {
                 AverageQueueLength[j] += accumulatedQueueLength[j] / 1500;
+                AverageQueueLengthData[j][(int)i] = accumulatedQueueLength[j] / 1500;
             }
             for (int j = 0; j < maxQueueLength.length; j++)
             {
                 AverageMaxQueueLength[j] += maxQueueLength[j];
+                AverageMaxQueueLengthData[j][(int)i] = maxQueueLength[j];
             }
             for (int j = 0; j < riderCountSum.length; j++)
             {
                 riderCountSum[j]+=sim.riderCounter[j];
+                riderCountSumData[j][(int)i] = sim.riderCounter[j];
             }
         }
 
@@ -127,6 +133,8 @@ public class mainClass
         for (double i : AverageQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean(AverageQueueLengthData[index], rep) + tDiff(1.96,variance(AverageQueueLengthData[index], rep),rep))));
+            System.out.printf("\tLower bound: %.2f\n",( (mean(AverageQueueLengthData[index], rep) - tDiff(1.96,variance(AverageQueueLengthData[index], rep),rep))));
             index++;
         }
         System.out.printf("\n>>Maximum Length of Queues\n");
@@ -134,6 +142,8 @@ public class mainClass
         for (double i : AverageMaxQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean((double)AverageMaxQueueLengthData[index], rep) + tDiff(1.96,variance((double)AverageMaxQueueLengthData[index], rep),rep))));
+            System.out.printf("\tLower bound: %.2f\n",( (mean((double)AverageMaxQueueLengthData[index], rep) - tDiff(1.96,variance((double)AverageMaxQueueLengthData[index], rep),rep))));
             index++;
         }
         System.out.printf("\n>>Total People through Queues:\n");
@@ -141,6 +151,8 @@ public class mainClass
         for (int i : riderCountAverage)
         {
             System.out.printf("%-20s\t%d people\n", stops[index].getName(), i);
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean(riderCountSumData[index], rep) + tDiff(1.96,variance(riderCountSumData[index], rep),rep))));
+            System.out.printf("\tLower bound: %.2f\n",( (mean(riderCountSumData[index], rep) - tDiff(1.96,variance(riderCountSumData[index], rep),rep))));
             index++;
         }
     }
