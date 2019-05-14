@@ -16,10 +16,13 @@ public class mainClass
         double[][] averageUtilData = new double[3][rep];
         double[] AverageQueueLength = new double[11];
         double[][] AverageQueueLengthData = new double[11][rep];
+        double[][] AverageWaitTimeData = new double[11][rep];
         long[] AverageMaxQueueLength = new long[11];
         long[][] MaxQueueLengthData = new long[11][rep];
         int[] riderCountSum = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         int[][] riderCountSumData = new int[11][rep];
+        int[] SumData = new int[rep];
+        int sum;
         Stop[] stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
@@ -53,6 +56,8 @@ public class mainClass
             double[] busClock = sim.getBusClock();
             double[] accumulatedQueueLength = sim.getAccQueueLength();
             long[] maxQueueLength = sim.getMaxQueueLength();
+            double[] accumulatedWaitTime = sim.getAccumulatedWaitTime();
+            sum = 0;
             for (int j = 0; j < averageUtil.length; j++)
             {
                 averageUtil[j] += (accumulatedBusUtil[j] / busClock[j]);
@@ -72,7 +77,10 @@ public class mainClass
             {
                 riderCountSum[j] += sim.riderCounter[j];
                 riderCountSumData[j][(int) i] = sim.riderCounter[j];
+                sum += sim.riderCounter[j];
+
             }
+            SumData[i] = sum;
         }
 
         for (int i = 0; i < averageUtil.length; i++)
@@ -161,6 +169,23 @@ public class mainClass
                     + tDiff(1.96, variance(riderCountSumData[index], rep), rep))));
             System.out.printf("\tLower bound: %.2f\n", ((mean(riderCountSumData[index], rep)
                     - tDiff(1.96, variance(riderCountSumData[index], rep), rep))));
+            index++;
+        }
+        System.out.printf("\n>>%-20s\t\t%d people\n", "Total People Served Average:", mean(SumData, rep));
+        System.out.printf("\n>>%-20s\t\t%d people\n", "Upper Bound:", ((mean(SumData, rep)
+                  + tDiff(1.96, variance(SumData, rep), rep))));
+        System.out.printf("\n>>%-20s\t\t%d people\n", "Lower Bound:", ((mean(SumData, rep)
+                  - tDiff(1.96, variance(SumData, rep), rep))));
+
+        out.printf("\n>>Average Wait Time People In Queue:\n");
+        index = 0;
+        for (double i : accumulatedWaitTime)
+        {
+            out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), mean(AverageWaitTimeData[index],rep));
+            System.out.printf("\tUpper Bound: %.2f\n", ((mean((AverageWaitTimeData[index]), rep)
+                    + tDiff(1.96, variance(AverageWaitTimeData[index], rep), rep))));
+            System.out.printf("\tLower bound: %.2f\n", ((mean(AverageWaitTimeData[index], rep)
+                    - tDiff(1.96, variance(AverageWaitTimeData[index], rep), rep))));
             index++;
         }
     }

@@ -27,7 +27,7 @@ public class Simulator
     private final double meanArrivalTime;
     private final double maxArrivalTime;
     private final double[] busBreakTime = { 1410, 1425, 1420 };
-    
+
     /**
      * State Variables
      */
@@ -37,8 +37,8 @@ public class Simulator
     private double[] accumulatedWaitTime; // the wait time over the run of the simulation per stop
     private double[] maxWaitTime; // the longest a person has had to wait for a bus per stop
     private long[] maxQueueLength; // the longest the line got at each stop
-    private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus 
-    
+    private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus
+
     private double LastEventTime;
     private double[] busClock;
 
@@ -166,7 +166,10 @@ public class Simulator
     {
         return maxQueueLength;
     }
-
+    public double[] getAccumulatedWaitTime()
+    {
+      return accumulatedWaitTime;
+    }
     /**
      * @return current system time in minutes
      */
