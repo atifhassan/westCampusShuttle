@@ -402,4 +402,12 @@ public class Simulator
     {
         return busClock;
     }
+    public double[] getAccQueueLength()
+    {
+      return accumulatedQueueLength;
+    }
+    public long[] getMaxQueueLength()
+    {
+      return maxQueueLength;
+    }
 }
