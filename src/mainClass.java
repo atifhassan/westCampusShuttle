@@ -15,6 +15,7 @@ public class mainClass
         double[] averageUtil = new double[] { 0.0, 0.0, 0.0 };
         double[] AverageQueueLength = new double[11];
         long[] AverageMaxQueueLength = new long[11];
+        int riderCountSum[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         Stop[] stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
                 new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
                 new Stop("Rappohannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
@@ -47,7 +48,6 @@ public class mainClass
             double[] busClock = sim.getBusClock();
             double[] accumulatedQueueLength = sim.getAccQueueLength();
             long[] maxQueueLength = sim.getMaxQueueLength();
-            
             for (int j = 0; j < averageUtil.length; j++)
             {
                 averageUtil[j] += (accumulatedBusUtil[j] / busClock[j]);
@@ -60,16 +60,25 @@ public class mainClass
             {
                 AverageMaxQueueLength[j] += maxQueueLength[j];
             }
+            for (int j = 0; j < riderCountSum.length; j++)
+            {
+                riderCountSum[j]+=sim.riderCounter[j];
+            }
         }
 
         for (int i = 0; i < averageUtil.length; i++)
         {
             averageUtil[i] = averageUtil[i] / rep;
         }
-        for (int m = 0; m < AverageQueueLength.length; m++)
+        for (int i = 0; i < AverageQueueLength.length; i++)
         {
-            AverageQueueLength[m] = AverageQueueLength[m] / rep;
-            AverageMaxQueueLength[m] = AverageMaxQueueLength[m] / rep;
+            AverageQueueLength[i] = AverageQueueLength[i] / rep;
+            AverageMaxQueueLength[i] = AverageMaxQueueLength[i] / rep;
+        }
+        int riderCountAverage[] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        for (int i = 0; i < riderCountSum.length; i++)
+        {
+            riderCountAverage[i] = riderCountSum[i]/(int)rep;
         }
 
         /*
@@ -91,9 +100,15 @@ public class mainClass
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
         double seconds = (double) elapsedTime / 1000000000.0;
+        int sum = 0;
+        for (int i : riderCountAverage)
+        {
+            sum += i;
+        }
         System.out.printf("SIMULATION REPORT:\n");
         System.out.printf("-----------------------------------------------------\n");
         System.out.printf("Simulation Time:\t 1500 minutes\n");
+        System.out.printf("%-20s\t %d people\n", "Average Ridership:", sum);
         System.out.printf("Runtime:\t\t %.3f seconds\n", seconds);
         System.out.printf("Number of Replications:\t " + rep);
         System.out.printf("\n\n>>Average Utilization\n");
@@ -114,6 +129,13 @@ public class mainClass
         for (double i : AverageMaxQueueLength)
         {
             System.out.printf("%-20s\t%.2f people\n", stops[index].getName(), i);
+            index++;
+        }
+        System.out.printf("\n>>Total People through Queues:\n");
+        index = 0;
+        for (int i : riderCountAverage)
+        {
+            System.out.printf("%-20s\t%d people\n", stops[index].getName(), i);
             index++;
         }
     }

@@ -29,7 +29,7 @@ public class Simulator
     /**
      * the total number of riders in the system
      */
-    private int[] riderCounter;
+    public int[] riderCounter;
     private int[] pickupCounter; // the total number of times the pickup event is called
     private double[] accumulatedQueueLength;
     private double[] accumulatedWaitTime;
@@ -394,14 +394,6 @@ public class Simulator
             for (double i : accumulatedWaitTime)
             {
                 out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i / riderCounter[index]);
-                index++;
-            }
-            //
-            out.printf("\n>>Max Wait Time People In Queue:\n");
-            index = 0;
-            for (double i : maxWaitTime)
-            {
-                out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i);
                 index++;
             }
 
