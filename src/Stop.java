@@ -88,5 +88,4 @@ public class Stop
     {
         return name + ": " + line.size() + " " + line.toString();
     }
-
 }

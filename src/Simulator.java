@@ -35,15 +35,12 @@ public class Simulator
     private int[] pickupCounter; // the total number of times the pickup event is called per bus
     private double[] maxWaitTime; // the longest a person has had to wait for a bus per stop
     private long[] maxQueueLength; // the longest the line got at each stop
-<<<<<<< HEAD
 
     /**
      * Statistics
      */
     private double[] accumulatedQueueLength; // the queue length over the run of the simulation per stop
     private double[] accumulatedWaitTime; // the wait time over the run of the simulation per stop
-=======
->>>>>>> 2b20de3ab857c46f4bf28562cd1530c27c573857
     private double[] accumulatedBusUtilization; // how full the bus is per minute, per bus
 
     private double LastEventTime;
@@ -76,6 +73,9 @@ public class Simulator
      */
     private void initialize()
     {
+        stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
+                new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
+                new Stop("Rappahannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
         LastEventTime = 0.0;
         accumulatedBusUtilization = new double[] { 0.0, 0.0, 0.0 };
         pickupCounter = new int[] { 0, 0, 0 };
@@ -84,9 +84,6 @@ public class Simulator
         accumulatedQueueLength = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 };
         accumulatedWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         maxWaitTime = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        stops = new Stop[] { new Stop("West Campus"), new Stop("Rapidan River O"), new Stop("Field House O"),
-                new Stop("RAC O"), new Stop("Mason Pond O"), new Stop("Presidents Park"), new Stop("Masonvale"),
-                new Stop("Rappahannock"), new Stop("RAC I"), new Stop("Field House I"), new Stop("Rapidan River I") };
         busLocationPointer = new int[] { 0, 0, 0 };
 
         // creates the buses and starts them at west campus
@@ -173,10 +170,12 @@ public class Simulator
     {
         return maxQueueLength;
     }
+
     public double[] getAccumulatedWaitTime()
     {
-      return accumulatedWaitTime;
+        return accumulatedWaitTime;
     }
+
     /**
      * @return current system time in minutes
      */

@@ -59,8 +59,8 @@ public class Bus
     }
 
     /**
-     * @param s the stop the bus is at
-     * @param clock the current simulation time
+     * @param s       the stop the bus is at
+     * @param clock   the current simulation time
      * @param maxWait the current max wait time
      * @return array of accumulated waitTime, new MaxWait, number of passengers picked up
      */
@@ -83,7 +83,6 @@ public class Bus
                 {
                     newMaxWait = temp.getWaitTime();
                 }
-
             } catch (Exception ex)
             {
                 ex.printStackTrace();
