@@ -116,6 +116,7 @@ public class mainClass
          * out.printf("\t%-20s\t\t%.2f minutes\n", stops[index].getName(), i); index++; }
          */
 
+        // Generate Report
         int index = 0;
         long endTime = System.nanoTime();
         long elapsedTime = endTime - startTime;
